@@ -1,7 +1,10 @@
+"use client"
+
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Check } from "lucide-react"
-import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 const PLANS = [
   {
@@ -16,7 +19,6 @@ const PLANS = [
       "Email support",
     ],
     cta: "Get Started",
-    href: "/register",
     popular: false,
   },
   {
@@ -33,8 +35,7 @@ const PLANS = [
       "Growth strategies",
       "Priority support",
     ],
-    cta: "Start Pro Trial",
-    href: "/register?plan=pro",
+    cta: "Start Pro",
     popular: true,
   },
   {
@@ -51,10 +52,16 @@ const PLANS = [
       "Dedicated support",
       "Custom integrations",
     ],
-    cta: "Contact Sales",
-    href: "mailto:hello@valisearch.ai",
+    cta: "Go Premium",
     popular: false,
   },
+]
+
+const GATEWAYS = [
+  { id: "stripe", name: "Stripe", color: "#635BFF" },
+  { id: "flutterwave", name: "Flutterwave", color: "#2A2A2A" },
+  { id: "paystack", name: "Paystack", color: "#00CBE4" },
+  { id: "lemonsqueezy", name: "Lemon Squeezy", color: "#FFD80A" },
 ]
 
 const FAQ = [
@@ -72,19 +79,72 @@ const FAQ = [
   },
   {
     question: "What payment methods do you accept?",
-    answer: "We accept all major credit cards through Lemon Squeezy. Works globally including Ghana.",
+    answer: "We accept all major credit cards through Stripe, Flutterwave, Paystack, and Lemon Squeezy. Works globally including Ghana.",
   },
 ]
 
 export default function PricingPage() {
+  const router = useRouter()
+  const [selectedGateway, setSelectedGateway] = useState("stripe")
+  const [loading, setLoading] = useState<string | null>(null)
+
+  async function handleSubscribe(plan: "pro" | "premium") {
+    setLoading(plan)
+
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          plan,
+          gateway: selectedGateway,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (data.url) {
+        window.location.href = data.url
+      } else {
+        console.error("Checkout failed:", data.error)
+      }
+    } catch (error) {
+      console.error("Checkout error:", error)
+    } finally {
+      setLoading(null)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-white">
       <div className="mx-auto max-w-6xl px-4 py-20">
-        <div className="mb-16 text-center">
+        <div className="mb-12 text-center">
           <h1 className="mb-4 text-4xl font-bold">Simple, transparent pricing</h1>
           <p className="text-lg text-muted-foreground">
             Get actionable startup intelligence in seconds
           </p>
+        </div>
+
+        <div className="mb-8 flex flex-wrap items-center justify-center gap-3">
+          <span className="text-sm font-medium">Pay with:</span>
+          {GATEWAYS.map((gw) => (
+            <button
+              key={gw.id}
+              onClick={() => setSelectedGateway(gw.id)}
+              className={`rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
+                selectedGateway === gw.id
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border hover:bg-muted"
+              }`}
+              style={
+                selectedGateway === gw.id
+                  ? { borderColor: gw.color, color: gw.color }
+                  : {}
+              }
+            >
+              {gw.name}
+            </button>
+          ))}
         </div>
 
         <div className="grid gap-8 md:grid-cols-3">
@@ -120,11 +180,33 @@ export default function PricingPage() {
                 </ul>
               </CardContent>
               <CardFooter>
-                <Link href={plan.href} className="w-full">
-                  <Button className="w-full" variant={plan.popular ? "default" : "outline"}>
+                {plan.name === "Free" ? (
+                  <Button
+                    className="w-full"
+                    variant={plan.popular ? "default" : "outline"}
+                    onClick={() => router.push("/register")}
+                  >
                     {plan.cta}
                   </Button>
-                </Link>
+                ) : plan.name === "Premium" ? (
+                  <Button
+                    className="w-full"
+                    variant={plan.popular ? "default" : "outline"}
+                    onClick={() => handleSubscribe("premium")}
+                    disabled={loading === "premium"}
+                  >
+                    {loading === "premium" ? "Processing..." : plan.cta}
+                  </Button>
+                ) : (
+                  <Button
+                    className="w-full"
+                    variant={plan.popular ? "default" : "outline"}
+                    onClick={() => handleSubscribe("pro")}
+                    disabled={loading === "pro"}
+                  >
+                    {loading === "pro" ? "Processing..." : plan.cta}
+                  </Button>
+                )}
               </CardFooter>
             </Card>
           ))}

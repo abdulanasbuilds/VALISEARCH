@@ -8,6 +8,48 @@ export const APP_DESCRIPTION =
   "AI-powered startup intelligence platform. 12 agents validate your idea in minutes." as const
 export const APP_URL = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"
 
+/** Payment gateway configuration */
+export const PAYMENT_GATEWAYS = {
+  lemonSqueezy: {
+    name: "Lemon Squeezy",
+    icon: "lemon",
+    color: "#FFD80A",
+    plans: {
+      pro: "ls_pro_monthly",
+      premium: "ls_premium_monthly",
+    },
+  },
+  stripe: {
+    name: "Stripe",
+    icon: "stripe",
+    color: "#635BFF",
+    plans: {
+      pro: "price_pro_monthly",
+      premium: "price_premium_monthly",
+    },
+  },
+  flutterwave: {
+    name: "Flutterwave",
+    icon: "flutterwave",
+    color: "#2A2A2A",
+    plans: {
+      pro: "pro_monthly",
+      premium: "premium_monthly",
+    },
+  },
+  paystack: {
+    name: "Paystack",
+    icon: "paystack",
+    color: "#00CBE4",
+    plans: {
+      pro: "pro_monthly",
+      premium: "premium_monthly",
+    },
+  },
+} as const
+
+export type PaymentGateway = keyof typeof PAYMENT_GATEWAYS
+
 /** Credit costs per analysis type */
 export const CREDIT_COSTS = {
   quick: 1,
