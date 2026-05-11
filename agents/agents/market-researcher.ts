@@ -1,6 +1,7 @@
 import type { AgentContext } from "../types"
 import type { MarketResearcherOutput } from "@/agents/types/analysis"
 import { searchWeb, readUrl } from "../tools/jina"
+import { retrieveKnowledge, formatKnowledgeForPrompt } from "../tools/rag"
 import type { SourceCitation } from "@/agents/types/analysis"
 
 const FALLBACK_OUTPUT: MarketResearcherOutput = {
@@ -16,7 +17,12 @@ const FALLBACK_OUTPUT: MarketResearcherOutput = {
 export async function runMarketResearcher(context: AgentContext): Promise<MarketResearcherOutput> {
   const { ideaText } = context
 
+  // First, retrieve relevant knowledge from RAG
+  const knowledgeResults = await retrieveKnowledge(context, { limit: 3 })
+  const knowledgeContext = formatKnowledgeForPrompt(knowledgeResults)
+
   try {
+    // Search for market size data
     // Search for market size data
     const tamSearch = await searchWeb(`${ideaText} market size TAM SAM`, 5)
     const growthSearch = await searchWeb(`${ideaText} market growth rate 2024 2025`, 3)
@@ -58,7 +64,7 @@ export async function runMarketResearcher(context: AgentContext): Promise<Market
       ...growthSearch.results.map((r) => r.snippet),
     ].slice(0, 5)
 
-    return {
+return {
       tam,
       sam,
       som,
@@ -69,7 +75,14 @@ export async function runMarketResearcher(context: AgentContext): Promise<Market
         "Southeast Asia: Digital transformation acceleration",
         "Latin America: Growing middle class, fintech adoption",
       ],
-      sources,
+      sources: [
+        ...sources,
+        ...knowledgeResults.map((k) => ({
+          title: k.title,
+          url: k.source_url,
+          snippet: k.content.slice(0, 150),
+        })),
+      ],
     }
   } catch (error) {
     console.error("MarketResearcher error:", error)

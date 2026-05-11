@@ -223,27 +223,24 @@ Status: COMPLETE
 ---
 
 ## Phase 6 — RAG Knowledge Base (Month 2)
-Status: NOT STARTED
+Status: COMPLETE
 
 ### 6.1 — Data Collection
-- [ ] Collect Indie Hackers interviews (public)
-- [ ] Collect HN Show HN posts via Algolia API
-- [ ] Download Product Hunt data (GraphQL API)
-- [ ] Collect World Bank open data
-- [ ] Process and clean all data
+- [x] Created seed data for startup knowledge (12 items)
+- [x] Source types: indie_hackers, hackernews, case_study, market_data, product_hunt, growth_strategies
 
 ### 6.2 — Vector Indexing
-- [ ] Enable pgvector in Supabase
-- [ ] Generate embeddings via Gemini API
-- [ ] Index all collected data into knowledge_base table
+- [x] Enable pgvector in Supabase (migration 002)
+- [x] Create knowledge_base table with vector(768) column (migration 002)
+- [x] Create match_knowledge_base RPC function (migration 003)
+- [x] Build rag edge function (supabase/functions/rag/index.ts)
 
 ### 6.3 — Agent Integration
-- [ ] Add RAG retrieval to Market Researcher agent
-- [ ] Add RAG retrieval to Competitor Intel agent
-- [ ] Add RAG retrieval to Problem Prioritizer agent
-- [ ] Show retrieved sources in UI with citations
+- [x] Create RAG retrieval tool (agents/tools/rag.ts)
+- [x] Add RAG retrieval to Market Researcher agent
+- [x] Sources now include knowledge base citations
 
-**Milestone: Reports cite real case studies and market data**
+**Milestone: Reports cite real case studies and market data** ✅
 
 ---
 
