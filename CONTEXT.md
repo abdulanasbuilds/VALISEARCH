@@ -41,7 +41,7 @@ Constraints that affect every decision:
 ## Tech Stack — NEVER DEVIATE FROM THIS
 
 ### Frontend
-- Next.js 15 (App Router ONLY — never Pages Router)
+- Next.js 16 (App Router ONLY — never Pages Router)
 - TypeScript 5 (strict mode — zero `any` types)
 - Tailwind CSS v4
 - shadcn/ui (component library)

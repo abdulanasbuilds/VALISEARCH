@@ -1,7 +1,7 @@
 # PLAN.md — ValiSearch 2.0 Build Plan
 
 ## Current Status
-Phase: Phase 2 — Agent Engine
+Phase: Phase 6 — RAG Knowledge Base (COMPLETE)
 Last updated: 2026-05-11
 
 ---
@@ -11,19 +11,19 @@ Status: COMPLETED
 
 ### 0.1 — Repository Setup
 - [x] Create GitHub repository
-- [x] Initialize Next.js 15 with TypeScript + Tailwind
+- [x] Initialize Next.js 16 with TypeScript + Tailwind
 - [x] Configure tsconfig.json strict mode
 - [x] Configure eslint
 - [x] Setup shadcn/ui
-- [x] Create CONTEXT.md, PLAN.md, AGENTS.md, SKILLS.md, RULES.md
-- [ ] Push to GitHub
+- [x] Create CONTEXT.md, PLAN.md, SKILLS.md, RULES.md
+- [x] Push to GitHub
 
 ### 0.2 — Supabase Setup
-- [ ] Create Supabase project (region: eu-west-2)
+- [x] Create Supabase project (region: eu-west-2)
 - [x] Run initial migration (001_initial.sql)
-- [ ] Enable pgvector extension
-- [ ] Configure Auth SMTP with Resend
-- [ ] Set Edge Function secrets
+- [x] Enable pgvector extension (migration 002)
+- [x] Configure Auth SMTP with Resend
+- [x] Set Edge Function secrets
 - [x] Generate TypeScript types
 
 ### 0.3 — Environment Configuration
