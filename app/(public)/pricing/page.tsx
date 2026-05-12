@@ -57,13 +57,6 @@ const PLANS = [
   },
 ]
 
-const GATEWAYS = [
-  { id: "stripe", name: "Stripe", color: "#635BFF" },
-  { id: "flutterwave", name: "Flutterwave", color: "#2A2A2A" },
-  { id: "paystack", name: "Paystack", color: "#00CBE4" },
-  { id: "lemonsqueezy", name: "Lemon Squeezy", color: "#FFD80A" },
-]
-
 const FAQ = [
   {
     question: "What are credits?",
@@ -79,13 +72,12 @@ const FAQ = [
   },
   {
     question: "What payment methods do you accept?",
-    answer: "We accept all major credit cards through Stripe, Flutterwave, Paystack, and Lemon Squeezy. Works globally including Ghana.",
+    answer: "We accept all major credit cards. Works globally.",
   },
 ]
 
 export default function PricingPage() {
   const router = useRouter()
-  const [selectedGateway, setSelectedGateway] = useState("stripe")
   const [loading, setLoading] = useState<string | null>(null)
 
   async function handleSubscribe(plan: "pro" | "premium") {
@@ -97,7 +89,7 @@ export default function PricingPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           plan,
-          gateway: selectedGateway,
+          gateway: "stripe",
         }),
       })
 
@@ -123,28 +115,6 @@ export default function PricingPage() {
           <p className="text-lg text-muted-foreground">
             Get actionable startup intelligence in seconds
           </p>
-        </div>
-
-        <div className="mb-8 flex flex-wrap items-center justify-center gap-3">
-          <span className="text-sm font-medium">Pay with:</span>
-          {GATEWAYS.map((gw) => (
-            <button
-              key={gw.id}
-              onClick={() => setSelectedGateway(gw.id)}
-              className={`rounded-lg border px-3 py-2 text-sm font-medium transition-all ${
-                selectedGateway === gw.id
-                  ? "border-primary bg-primary/10 text-primary"
-                  : "border-border hover:bg-muted"
-              }`}
-              style={
-                selectedGateway === gw.id
-                  ? { borderColor: gw.color, color: gw.color }
-                  : {}
-              }
-            >
-              {gw.name}
-            </button>
-          ))}
         </div>
 
         <div className="grid gap-8 md:grid-cols-3">
