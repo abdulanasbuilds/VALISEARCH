@@ -1,131 +1,104 @@
-import { NextRequest, NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
-import crypto from "crypto"
+export const runtime = "edge"
 
-const LS_SECRET = process.env.LEMON_SQUEEZY_SECRET
+export async function POST(request: Request) {
+  try {
+    const rawBody = await request.text()
+    const signature = request.headers.get("x-signature")
+    const secret = process.env.LS_WEBHOOK_SECRET
 
-interface LemonSqueezyPayload {
-  meta: {
-    event_name: string
-    custom_data: {
-      user_id: string
+    if (!signature || !secret) {
+      return new Response("Unauthorized", { status: 401 })
     }
-  }
-  data: {
-    id: string
-    attributes: {
-      customer_id: string
-      status: string
-      renews_at: string | null
-      ends_at: string | null
-      plan_id: number
-      variant_id: number
+
+    const encoder = new TextEncoder()
+    const keyData = encoder.encode(secret)
+    const messageData = encoder.encode(rawBody)
+
+    const cryptoKey = await crypto.subtle.importKey(
+      "raw",
+      keyData,
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["verify"]
+    )
+
+    const sigBytes = hexToBytes(signature)
+    const isValid = await crypto.subtle.verify(
+      "HMAC",
+      cryptoKey,
+      sigBytes.slice().buffer,
+      messageData
+    )
+
+    if (!isValid) {
+      return new Response("Invalid signature", { status: 401 })
     }
+
+    const payload = JSON.parse(rawBody) as {
+      meta: { event_name: string }
+      data: {
+        attributes: {
+          user_email: string
+          first_order_item?: {
+            variant_id: number
+          }
+        }
+        meta?: { custom?: { user_id?: string } }
+      }
+    }
+
+    const { createClient } = await import(
+      "@supabase/supabase-js"
+    )
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    )
+
+    if (payload.meta.event_name === "order_created") {
+      const userId =
+        payload.data.meta?.custom?.user_id
+      if (!userId) {
+        return new Response("Missing user_id", { status: 400 })
+      }
+
+      const variantId =
+        payload.data.attributes.first_order_item?.variant_id
+      const plan = variantId?.toString() ===
+        process.env.NEXT_PUBLIC_LS_PREMIUM_VARIANT_ID
+        ? "premium"
+        : "pro"
+
+      const credits = plan === "premium" ? 9999 : 100
+
+      await supabase
+        .from("credits")
+        .update({ balance: credits })
+        .eq("user_id", userId)
+
+      await supabase.from("profiles")
+        .update({ plan })
+        .eq("id", userId)
+
+      await supabase.from("subscriptions").upsert({
+        user_id: userId,
+        plan,
+        status: "active",
+      })
+    }
+
+    return new Response("OK", { status: 200 })
+
+  } catch (error) {
+    console.error("[ls-webhook] error:", error)
+    return new Response("Error", { status: 500 })
   }
 }
 
-export async function POST(req: NextRequest) {
-  if (!LS_SECRET) {
-    console.error("LEMON_SQUEEZY_SECRET not configured")
-    return NextResponse.json({ error: "Server misconfigured" }, { status: 500 })
+function hexToBytes(hex: string): Uint8Array {
+  const bytes = new Uint8Array(hex.length / 2)
+  for (let i = 0; i < hex.length; i += 2) {
+    bytes[i / 2] = parseInt(hex.substring(i, i + 2), 16)
   }
-
-  const rawBody = await req.text()
-  const signature = req.headers.get("x-signature")
-
-  if (!signature) {
-    return NextResponse.json({ error: "Missing signature" }, { status: 400 })
-  }
-
-  const hmac = crypto.createHmac("sha256", LS_SECRET)
-  const digest = hmac.update(rawBody).digest("hex")
-
-  if (digest !== signature) {
-    return NextResponse.json({ error: "Invalid signature" }, { status: 401 })
-  }
-
-  const payload: LemonSqueezyPayload = JSON.parse(rawBody)
-  const { meta, data } = payload
-  const eventName = meta.event_name
-  const userId = meta.custom_data?.user_id
-
-  if (!userId) {
-    return NextResponse.json({ error: "No user_id in custom_data" }, { status: 400 })
-  }
-
-  const supabase = await createClient()
-
-  const subscriptionData = {
-    user_id: userId,
-    ls_subscription_id: data.id,
-    ls_customer_id: data.attributes.customer_id,
-    status: data.attributes.status,
-    plan_id: data.attributes.variant_id,
-    current_period_end: data.attributes.renews_at || data.attributes.ends_at,
-    updated_at: new Date().toISOString(),
-  }
-
-  switch (eventName) {
-    case "subscription_created":
-    case "subscription_updated": {
-      const { error: subError } = await supabase
-        .from("subscriptions")
-        .upsert(subscriptionData, { onConflict: "user_id" })
-
-      if (subError) {
-        console.error("Subscription upsert error:", subError)
-        return NextResponse.json({ error: "DB error" }, { status: 500 })
-      }
-
-      const creditsToAdd = data.attributes.variant_id === 1 ? 6 : data.attributes.variant_id === 2 ? 100 : -1
-
-      if (creditsToAdd > 0) {
-        const { data: creditRow } = await supabase
-          .from("credits")
-          .select("balance")
-          .eq("user_id", userId)
-          .single()
-
-        const newBalance = creditRow?.balance ? creditRow.balance + creditsToAdd : creditsToAdd
-
-        await supabase
-          .from("credits")
-          .update({ balance: newBalance })
-          .eq("user_id", userId)
-
-        await supabase.from("credit_transactions").insert({
-          user_id: userId,
-          type: "purchase",
-          amount: creditsToAdd,
-          description: `Lemon Squeezy subscription activated`,
-        })
-      }
-
-      break
-    }
-
-    case "subscription_cancelled":
-    case "subscription_expired": {
-      await supabase
-        .from("subscriptions")
-        .update({ status: "cancelled", updated_at: new Date().toISOString() })
-        .eq("user_id", userId)
-
-      break
-    }
-
-    case "subscription_payment_failed": {
-      await supabase
-        .from("subscriptions")
-        .update({ status: "past_due", updated_at: new Date().toISOString() })
-        .eq("user_id", userId)
-
-      break
-    }
-
-    default:
-      console.log("Unhandled event:", eventName)
-  }
-
-  return NextResponse.json({ received: true })
+  return bytes
 }
