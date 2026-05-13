@@ -1,16 +1,12 @@
-import { NextResponse } from 'next/server'
+export const runtime = "edge"
 
-export const dynamic = 'force-dynamic'
-
-export async function GET() {
-  return NextResponse.json({
-    status: 'ok',
+export function GET(): Response {
+  return Response.json({
+    status: "ok",
     timestamp: new Date().toISOString(),
-    app: 'ValiSearch 2.0',
-    uptime: process.uptime?.() ?? 'unknown'
+    app: "ValiSearch 2.0",
+    version: "2.0.0",
+    agents: 12,
+    tools: 10,
   })
-}
-
-export async function HEAD() {
-  return new NextResponse(null, { status: 200 })
 }

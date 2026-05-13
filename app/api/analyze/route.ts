@@ -3,13 +3,8 @@ import { createClient } from "@/lib/supabase/server"
 import { sanitizeIdea } from "@/lib/utils"
 
 async function triggerTask(taskId: string, payload: unknown) {
-  // In production, use:
-  // import { tasks } from "@trigger.dev/sdk/v3"
-  // await tasks.trigger(taskId, payload)
-  
-  // For now, log and return mock
-  console.log(`[Trigger.dev] Triggering task: ${taskId}`, payload)
-  return { id: `job-${Date.now()}` }
+  console.log(`[Trigger.dev] Would trigger task ${taskId} with:`, payload)
+  return { id: `mock-${Date.now()}` }
 }
 
 export const runtime = "nodejs"
@@ -40,7 +35,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Check credits
     const { data: credits } = await supabase
       .from("credits")
       .select("balance")
@@ -63,7 +57,6 @@ export async function POST(request: NextRequest) {
 
     const sanitized = sanitizeIdea(idea)
 
-    // Get user plan
     const { data: profile } = await supabase
       .from("profiles")
       .select("plan")
@@ -73,7 +66,6 @@ export async function POST(request: NextRequest) {
     const userPlan = (profile?.plan ?? "free") as
       "free" | "pro" | "premium"
 
-    // Create idea record
     const { data: savedIdea } = await supabase
       .from("ideas")
       .insert({
@@ -92,7 +84,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create pending analysis record
     const { data: analysis } = await supabase
       .from("analysis")
       .insert({
@@ -112,7 +103,6 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Trigger background job (no timeout limit)
     const handle = await triggerTask(
       "analyze-startup-idea",
       {
