@@ -1,119 +1,140 @@
+import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
-import { NextResponse } from "next/server"
-import { ideaSchema } from "@/lib/validations/idea"
+import { sanitizeIdea } from "@/lib/utils"
 
-// Credit costs
-const CREDIT_COSTS = { quick: 1, full: 2, deep: 3 } as const
+async function triggerTask(taskId: string, payload: unknown) {
+  // In production, use:
+  // import { tasks } from "@trigger.dev/sdk/v3"
+  // await tasks.trigger(taskId, payload)
+  
+  // For now, log and return mock
+  console.log(`[Trigger.dev] Triggering task: ${taskId}`, payload)
+  return { id: `job-${Date.now()}` }
+}
 
-export async function POST(request: Request) {
+export const runtime = "nodejs"
+
+export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient()
-
-    // Verify auth
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser()
+    const { data: { user }, error: authError } =
+      await supabase.auth.getUser()
 
     if (authError || !user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+      return NextResponse.json(
+        { error: "Unauthorized" },
+        { status: 401 }
+      )
     }
 
-    // Validate input
-    const body = await request.json()
-    const validation = ideaSchema.safeParse(body)
+    const { idea, analysisType = "full" } =
+      await request.json() as {
+        idea: string
+        analysisType?: "quick" | "full"
+      }
 
-    if (!validation.success) {
+    if (!idea || idea.trim().length < 20) {
       return NextResponse.json(
-        { error: "Invalid input", details: validation.error.issues },
+        { error: "Idea must be at least 20 characters" },
         { status: 400 }
       )
     }
 
-    const { ideaText, analysisType = "full" } = validation.data
-    const cost = CREDIT_COSTS[analysisType] ?? 2
-
     // Check credits
-    const { data: creditData, error: creditError } = await supabase
+    const { data: credits } = await supabase
       .from("credits")
       .select("balance")
       .eq("user_id", user.id)
       .single()
 
-    if (creditError || !creditData) {
-      return NextResponse.json({ error: "Failed to check credits" }, { status: 500 })
-    }
+    const creditsNeeded = analysisType === "quick" ? 1 : 2
 
-    if (creditData.balance < cost) {
+    if (!credits || credits.balance < creditsNeeded) {
       return NextResponse.json(
-        { error: "Insufficient credits", balance: creditData.balance, cost },
+        {
+          error: "Insufficient credits",
+          code: "NO_CREDITS",
+          creditsNeeded,
+          creditsAvailable: credits?.balance ?? 0,
+        },
         { status: 402 }
       )
     }
 
-    // Deduct credits
-    const { error: deductError } = await supabase
-      .from("credits")
-      .update({ balance: creditData.balance - cost })
-      .eq("user_id", user.id)
+    const sanitized = sanitizeIdea(idea)
 
-    if (deductError) {
-      return NextResponse.json({ error: "Failed to deduct credits" }, { status: 500 })
-    }
+    // Get user plan
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("plan")
+      .eq("id", user.id)
+      .single()
 
-    // Log transaction
-    await supabase.from("credit_transactions").insert({
-      user_id: user.id,
-      amount: -cost,
-      reason: `Analysis: ${analysisType}`,
-    })
+    const userPlan = (profile?.plan ?? "free") as
+      "free" | "pro" | "premium"
 
     // Create idea record
-    const { data: idea, error: ideaError } = await supabase
+    const { data: savedIdea } = await supabase
       .from("ideas")
       .insert({
         user_id: user.id,
-        idea_text: ideaText,
-        word_count: ideaText.split(/\s+/).length,
+        idea_text: sanitized,
+        title: sanitized.slice(0, 80),
+        word_count: sanitized.split(" ").length,
       })
       .select()
       .single()
 
-    if (ideaError) {
-      return NextResponse.json({ error: "Failed to save idea" }, { status: 500 })
+    if (!savedIdea) {
+      return NextResponse.json(
+        { error: "Failed to save idea" },
+        { status: 500 }
+      )
     }
 
-    // Create analysis record
-    const { data: analysis, error: analysisError } = await supabase
+    // Create pending analysis record
+    const { data: analysis } = await supabase
       .from("analysis")
       .insert({
-        idea_id: idea.id,
+        idea_id: savedIdea.id,
         user_id: user.id,
         status: "pending",
         analysis_type: analysisType,
-        credits_used: cost,
+        credits_used: creditsNeeded,
       })
       .select()
       .single()
 
-    if (analysisError) {
-      return NextResponse.json({ error: "Failed to create analysis" }, { status: 500 })
+    if (!analysis) {
+      return NextResponse.json(
+        { error: "Failed to create analysis" },
+        { status: 500 }
+      )
     }
 
-    // TODO: In production, trigger the Trigger.dev job here
-    // const { id: jobId } = await client.trigger("analyze-idea", { ... })
-
-    // For now, return analysis ID and let frontend poll for results
-    // The actual analysis will be triggered via Edge Function or background job
+    // Trigger background job (no timeout limit)
+    const handle = await triggerTask(
+      "analyze-startup-idea",
+      {
+        idea: sanitized,
+        userId: user.id,
+        analysisId: analysis.id,
+        userPlan,
+        analysisType,
+      }
+    )
 
     return NextResponse.json({
       analysisId: analysis.id,
+      jobId: handle.id,
       status: "pending",
-      creditsUsed: cost,
-      remainingCredits: creditData.balance - cost,
     })
+
   } catch (error) {
-    console.error("Analyze API error:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+    console.error("[analyze route] error:", error)
+    return NextResponse.json(
+      { error: "Analysis failed to start" },
+      { status: 500 }
+    )
   }
 }
