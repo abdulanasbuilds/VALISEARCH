@@ -1,5 +1,6 @@
 import type { AgentContext } from "../types"
 import type { OfferArchitectOutput } from "@/agents/types/analysis"
+import { traceAgentCall } from "../tools/langsmith"
 
 const FALLBACK_OUTPUT: OfferArchitectOutput = {
   headline: "Transform Your Startup Idea into Action",
@@ -16,10 +17,23 @@ const FALLBACK_OUTPUT: OfferArchitectOutput = {
 }
 
 export async function runOfferArchitect(context: AgentContext): Promise<OfferArchitectOutput> {
+  return traceAgentCall(
+    {
+      agentName: "offer_architect",
+      userId: context.userId ?? "anonymous",
+      analysisId: context.analysisId ?? "dev",
+      model: "auto",
+      userPlan: "free",
+    },
+    () => runOfferArchitectInner(context)
+  )
+}
+
+async function runOfferArchitectInner(context: AgentContext): Promise<OfferArchitectOutput> {
   const { ideaText, plan } = context
 
-  const pricingBasedOnPlan = plan === "free" 
-    ? FALLBACK_OUTPUT.pricing_tiers 
+  const pricingBasedOnPlan = plan === "free"
+    ? FALLBACK_OUTPUT.pricing_tiers
     : plan === "premium"
     ? [
         { ...FALLBACK_OUTPUT.pricing_tiers[0], recommended: false },
@@ -33,7 +47,7 @@ export async function runOfferArchitect(context: AgentContext): Promise<OfferArc
     subheadline: "12 AI agents analyze market, competitors, and growth strategy",
     value_proposition: "Get comprehensive startup intelligence - market sizing, competitor analysis, growth strategy - all in one report. Built specifically for founders in Africa, Southeast Asia, and Latin America.",
     ideal_customer_profile: "Early-stage founders, solo entrepreneurs, and small teams in emerging markets who need fast, actionable insights without expensive consulting",
-    pricing_tiers: pricingBasedOnPlan as any,
+    pricing_tiers: pricingBasedOnPlan,
     objection_handlers: [
       { objection: "This seems expensive for a startup", response: "Our $29/month plan gives you 100 credits - that's 50 full analyses. Compare to $500+ for a single consultant report." },
       { objection: "How accurate is this?", response: "We cite real sources for every data point. Our 12 agents cross-reference to flag contradictions." },

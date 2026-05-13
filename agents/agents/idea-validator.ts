@@ -1,6 +1,8 @@
 import type { AgentContext } from "../types"
 import type { IdeaValidatorOutput, SourceCitation } from "@/agents/types/analysis"
 import { searchWeb, readUrl } from "../tools/jina"
+import { traceAgentCall } from "../tools/langsmith"
+import { withRetryGraph } from "../tools/retry-graph"
 
 const FALLBACK_OUTPUT: IdeaValidatorOutput = {
   overall_score: 50,
@@ -19,11 +21,27 @@ const FALLBACK_OUTPUT: IdeaValidatorOutput = {
 }
 
 export async function runIdeaValidator(context: AgentContext): Promise<IdeaValidatorOutput> {
+  return traceAgentCall(
+    {
+      agentName: "idea_validator",
+      userId: context.userId ?? "anonymous",
+      analysisId: context.analysisId ?? "dev",
+      model: "auto",
+      userPlan: "free",
+    },
+    () => runIdeaValidatorInner(context)
+  )
+}
+
+async function runIdeaValidatorInner(context: AgentContext): Promise<IdeaValidatorOutput> {
   const { ideaText } = context
 
   try {
     // Get market context via web search
-    const searchResults = await searchWeb(`${ideaText} market size trends`, 3)
+    const searchResults = await withRetryGraph(
+      () => searchWeb(`${ideaText} market size trends`, 3),
+      { maxAttempts: 2, fallback: { results: [], total: 0 }, operationName: "validator-search" }
+    )
     
     // Prepare prompt with market context
     const userPrompt = `${generateUserPrompt(ideaText)}

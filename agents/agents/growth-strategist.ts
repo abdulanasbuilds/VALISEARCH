@@ -1,5 +1,6 @@
 import type { AgentContext } from "../types"
 import type { GrowthStrategistOutput } from "@/agents/types/analysis"
+import { traceAgentCall } from "../tools/langsmith"
 
 const FALLBACK_OUTPUT: GrowthStrategistOutput = {
   primary_channels: [{ channel: "Content marketing", strategy: "SEO blog posts", estimated_cac: "$0-5", timeline: "3-6 months", difficulty: "medium" }],
@@ -10,6 +11,19 @@ const FALLBACK_OUTPUT: GrowthStrategistOutput = {
 }
 
 export async function runGrowthStrategist(context: AgentContext): Promise<GrowthStrategistOutput> {
+  return traceAgentCall(
+    {
+      agentName: "growth_strategist",
+      userId: context.userId ?? "anonymous",
+      analysisId: context.analysisId ?? "dev",
+      model: "auto",
+      userPlan: "free",
+    },
+    () => runGrowthStrategistInner(context)
+  )
+}
+
+async function runGrowthStrategistInner(context: AgentContext): Promise<GrowthStrategistOutput> {
   return {
     primary_channels: [
       {

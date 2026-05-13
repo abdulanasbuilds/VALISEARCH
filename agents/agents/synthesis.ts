@@ -1,7 +1,21 @@
 import type { AgentContext } from "../types"
 import type { FullAnalysisOutput, SynthesisOutput } from "@/agents/types/analysis"
+import { traceAgentCall } from "../tools/langsmith"
 
 export async function runSynthesis(context: AgentContext, results: FullAnalysisOutput): Promise<SynthesisOutput> {
+  return traceAgentCall(
+    {
+      agentName: "synthesis",
+      userId: context.userId ?? "anonymous",
+      analysisId: context.analysisId ?? "dev",
+      model: "claude-sonnet",
+      userPlan: "free",
+    },
+    () => runSynthesisInner(context, results)
+  )
+}
+
+async function runSynthesisInner(context: AgentContext, results: FullAnalysisOutput): Promise<SynthesisOutput> {
   const { ideaText } = context
 
   // Cross-reference all agent outputs

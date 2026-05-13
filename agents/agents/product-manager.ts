@@ -1,5 +1,6 @@
 import type { AgentContext } from "../types"
 import type { ProductManagerOutput } from "@/agents/types/analysis"
+import { traceAgentCall } from "../tools/langsmith"
 
 const FALLBACK_OUTPUT: ProductManagerOutput = {
   mvp_features: [
@@ -18,6 +19,19 @@ const FALLBACK_OUTPUT: ProductManagerOutput = {
 }
 
 export async function runProductManager(context: AgentContext): Promise<ProductManagerOutput> {
+  return traceAgentCall(
+    {
+      agentName: "product_manager",
+      userId: context.userId ?? "anonymous",
+      analysisId: context.analysisId ?? "dev",
+      model: "auto",
+      userPlan: "free",
+    },
+    () => runProductManagerInner(context)
+  )
+}
+
+async function runProductManagerInner(context: AgentContext): Promise<ProductManagerOutput> {
   const { ideaText } = context
 
   try {

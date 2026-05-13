@@ -1,9 +1,29 @@
 import type { AgentContext } from "../types"
 import type { BrandNamerOutput } from "@/agents/types/analysis"
+import { traceAgentCall } from "../tools/langsmith"
+
+const FALLBACK_OUTPUT: BrandNamerOutput = {
+  names: [{ name: "ValiSearch", tagline: "Validate. Build. Scale.", domain_suggestion: "valisearch.co", reasoning: "Direct, memorable", tone: "Professional" }],
+  recommended_name: "ValiSearch",
+  brand_voice: { personality: ["Helpful"], tone_words: ["validate"], avoid_words: ["complicated"], sample_sentences: ["Validate your idea."] },
+  color_palette: [{ name: "Primary Blue", hex: "#1B4FFF", usage: "Main brand color" }],
+  typography_suggestion: "Inter",
+}
 
 export async function runBrandNamer(context: AgentContext): Promise<BrandNamerOutput> {
-  const { ideaText } = context
+  return traceAgentCall(
+    {
+      agentName: "brand_namer",
+      userId: context.userId ?? "anonymous",
+      analysisId: context.analysisId ?? "dev",
+      model: "auto",
+      userPlan: "free",
+    },
+    () => runBrandNamerInner(context)
+  )
+}
 
+async function runBrandNamerInner(context: AgentContext): Promise<BrandNamerOutput> {
   return {
     names: [
       { name: "ValiSearch", tagline: "Validate. Build. Scale.", domain_suggestion: "valisearch.co", reasoning: "Direct, memorable, describes action", tone: "Professional, trustworthy" },

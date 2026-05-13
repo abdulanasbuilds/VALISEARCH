@@ -2,6 +2,8 @@ import type { AgentContext } from "../types"
 import type { ProblemPrioritizerOutput } from "@/agents/types/analysis"
 import { getRedditSignals, extractPainPoints } from "../tools/reddit"
 import { getHNSignals, extractTrends } from "../tools/hackernews"
+import { traceAgentCall } from "../tools/langsmith"
+import { withRetryGraph } from "../tools/retry-graph"
 import type { SourceCitation } from "@/agents/types/analysis"
 
 const FALLBACK_OUTPUT: ProblemPrioritizerOutput = {
@@ -13,12 +15,31 @@ const FALLBACK_OUTPUT: ProblemPrioritizerOutput = {
 }
 
 export async function runProblemPrioritizer(context: AgentContext): Promise<ProblemPrioritizerOutput> {
+  return traceAgentCall(
+    {
+      agentName: "problem_prioritizer",
+      userId: context.userId ?? "anonymous",
+      analysisId: context.analysisId ?? "dev",
+      model: "auto",
+      userPlan: "free",
+    },
+    () => runProblemPrioritizerInner(context)
+  )
+}
+
+async function runProblemPrioritizerInner(context: AgentContext): Promise<ProblemPrioritizerOutput> {
   const { ideaText } = context
 
   try {
     // Get signals from Reddit and HN
-    const redditResult = await getRedditSignals(ideaText, 15)
-    const hnResult = await getHNSignals(ideaText, 10)
+    const redditResult = await withRetryGraph(
+      () => getRedditSignals(ideaText, 15),
+      { maxAttempts: 2, fallback: { posts: [], total: 0 }, operationName: "reddit-signals" }
+    )
+    const hnResult = await withRetryGraph(
+      () => getHNSignals(ideaText, 10),
+      { maxAttempts: 2, fallback: { posts: [], total: 0 }, operationName: "hn-signals" }
+    )
 
     // Extract pain points and trends
     const painPoints = extractPainPoints(redditResult.posts)

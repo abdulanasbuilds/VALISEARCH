@@ -1,5 +1,6 @@
 import type { AgentContext } from "../types"
 import type { DistributionPlannerOutput } from "@/agents/types/analysis"
+import { traceAgentCall } from "../tools/langsmith"
 
 const FALLBACK_OUTPUT: DistributionPlannerOutput = {
   launch_strategy: [{ phase: "Pre-launch", duration: "2 weeks", actions: ["Build waitlist"], goals: ["500 signups"] }],
@@ -10,6 +11,19 @@ const FALLBACK_OUTPUT: DistributionPlannerOutput = {
 }
 
 export async function runDistributionPlanner(context: AgentContext): Promise<DistributionPlannerOutput> {
+  return traceAgentCall(
+    {
+      agentName: "distribution_planner",
+      userId: context.userId ?? "anonymous",
+      analysisId: context.analysisId ?? "dev",
+      model: "auto",
+      userPlan: "free",
+    },
+    () => runDistributionPlannerInner(context)
+  )
+}
+
+async function runDistributionPlannerInner(context: AgentContext): Promise<DistributionPlannerOutput> {
   return {
     launch_strategy: [
       {

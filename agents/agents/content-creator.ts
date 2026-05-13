@@ -1,9 +1,29 @@
 import type { AgentContext } from "../types"
 import type { ContentCreatorOutput } from "@/agents/types/analysis"
+import { traceAgentCall } from "../tools/langsmith"
+
+const FALLBACK_OUTPUT: ContentCreatorOutput = {
+  hooks: [],
+  content_system: { pillars: [], weekly_cadence: [], content_repurposing: [] },
+  seo_keywords: [],
+  email_subject_lines: [],
+  social_bio: "",
+}
 
 export async function runContentCreator(context: AgentContext): Promise<ContentCreatorOutput> {
-  const { ideaText } = context
+  return traceAgentCall(
+    {
+      agentName: "content_creator",
+      userId: context.userId ?? "anonymous",
+      analysisId: context.analysisId ?? "dev",
+      model: "auto",
+      userPlan: "free",
+    },
+    () => runContentCreatorInner(context)
+  )
+}
 
+async function runContentCreatorInner(context: AgentContext): Promise<ContentCreatorOutput> {
   return {
     hooks: [
       { hook: "I used to pay consultants $500 for what our 12 AI agents do in 2 minutes", platform: "Twitter", format: "Thread", why_it_works: "Contrasts expensive vs cheap, triggers curiosity" },

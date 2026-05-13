@@ -1,7 +1,29 @@
 import type { AgentContext } from "../types"
 import type { ScaleArchitectOutput } from "@/agents/types/analysis"
+import { traceAgentCall } from "../tools/langsmith"
+
+const FALLBACK_OUTPUT: ScaleArchitectOutput = {
+  phases: [],
+  revenue_model: "",
+  unit_economics: { cac: "", ltv: "", ltv_cac_ratio: "", payback_period: "" },
+  funding_recommendation: "",
+  key_assumptions: [],
+}
 
 export async function runScaleArchitect(context: AgentContext): Promise<ScaleArchitectOutput> {
+  return traceAgentCall(
+    {
+      agentName: "scale_architect",
+      userId: context.userId ?? "anonymous",
+      analysisId: context.analysisId ?? "dev",
+      model: "auto",
+      userPlan: "free",
+    },
+    () => runScaleArchitectInner(context)
+  )
+}
+
+async function runScaleArchitectInner(context: AgentContext): Promise<ScaleArchitectOutput> {
   return {
     phases: [
       {
