@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { formatRelativeTime } from "@/lib/utils"
-import { ArrowLeft, Share2, Download, RefreshCw } from "lucide-react"
+import { ArrowLeft, Share2, Download, RefreshCw, Clock } from "lucide-react"
 import Link from "next/link"
 import { OverviewSection } from "@/components/analysis/sections/OverviewSection"
 import { ValidationSection } from "@/components/analysis/sections/ValidationSection"
@@ -72,48 +72,48 @@ export default async function AnalysisDashboardPage({ params }: Props) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="border-b bg-white px-6 py-4">
+      <div className="border-b border-border/40 bg-muted/5 px-6 py-6">
         <div className="mx-auto max-w-6xl">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-start gap-4">
               <Link href="/workspace">
-                <Button variant="ghost" size="icon">
+                <Button variant="outline" size="icon" className="h-10 w-10 shrink-0">
                   <ArrowLeft className="h-5 w-5" />
                 </Button>
               </Link>
               <div>
-                <h1 className="text-xl font-bold">
-                  {analysis.ideas?.title || ideaText.slice(0, 50) || "Analysis"}
-                </h1>
-                <p className="text-sm text-muted-foreground">
-                  {formatRelativeTime(analysis.created_at)} •{" "}
+                <div className="flex items-center gap-2 mb-1">
                   <Badge
-                    variant="secondary"
-                    className={
+                    variant="outline"
+                    className={`font-mono text-[10px] tracking-wider ${
                       analysis.status === "completed"
-                        ? "bg-green-500 text-white"
+                        ? "border-green-500/30 text-green-500 bg-green-500/10"
                         : analysis.status === "failed"
-                        ? "bg-red-500 text-white"
-                        : ""
-                    }
+                        ? "border-red-500/30 text-red-500 bg-red-500/10"
+                        : "border-blue-500/30 text-blue-500 bg-blue-500/10 animate-pulse"
+                    }`}
                   >
-                    {analysis.status}
+                    STATUS: {analysis.status.toUpperCase()}
                   </Badge>
-                </p>
+                  <span className="text-xs text-muted-foreground font-mono flex items-center gap-1"><Clock className="h-3 w-3" /> {formatRelativeTime(analysis.created_at)}</span>
+                </div>
+                <h1 className="text-2xl font-bold tracking-tight text-foreground line-clamp-1">
+                  {analysis.ideas?.title || ideaText.slice(0, 50) || "Analysis Execution"}
+                </h1>
               </div>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm">
+              <Button variant="secondary" size="sm" className="h-9">
                 <Share2 className="mr-2 h-4 w-4" />
-                Share
+                Share Report
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="secondary" size="sm" className="h-9">
                 <Download className="mr-2 h-4 w-4" />
-                Export
+                Export PDF
               </Button>
-              <Button variant="outline" size="sm">
+              <Button variant="default" size="sm" className="h-9 shadow-md shadow-primary/20">
                 <RefreshCw className="mr-2 h-4 w-4" />
-                Re-run
+                Re-Execute Pipeline
               </Button>
             </div>
           </div>
