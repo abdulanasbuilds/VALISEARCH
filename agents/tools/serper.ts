@@ -1,4 +1,4 @@
-interface SerperResult {
+export interface SerperResult {
   title: string
   link: string
   snippet: string

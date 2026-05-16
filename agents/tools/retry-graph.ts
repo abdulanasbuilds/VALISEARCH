@@ -1,12 +1,10 @@
-type AgentFunction = () => Promise<unknown>
-
 /**
  * Creates a retry graph for unreliable operations.
  * Handles: "if search fails, try again" patterns.
  * Uses exponential backoff between retries.
  */
 export async function withRetryGraph<T>(
-  fn: AgentFunction,
+  fn: () => Promise<T>,
   options: {
     maxAttempts?: number
     fallback?: T
@@ -21,7 +19,7 @@ export async function withRetryGraph<T>(
     try {
       const result = await fn()
       if (result !== null && result !== undefined) {
-        return result as T
+        return result
       }
       throw new Error("Empty result returned")
     } catch (error) {
