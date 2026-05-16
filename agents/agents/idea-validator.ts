@@ -3,6 +3,7 @@ import type { IdeaValidatorOutput, SourceCitation } from "@/agents/types/analysi
 import { searchWeb, readUrl } from "../tools/jina"
 import { traceAgentCall } from "../tools/langsmith"
 import { withRetryGraph } from "../tools/retry-graph"
+import { generateUserPrompt } from "../prompts"
 
 const FALLBACK_OUTPUT: IdeaValidatorOutput = {
   overall_score: 50,
