@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { IDEA_MIN_LENGTH, IDEA_MAX_LENGTH } from "@/lib/constants"
 import { getWordCount } from "@/lib/utils"
-import { ArrowRight, Sparkles, Cpu, Activity, ShieldCheck, Database } from "lucide-react"
+import { Sparkles, Zap, ShieldCheck } from "lucide-react"
 import { AuthGateModal } from "@/components/auth/AuthGateModal"
 import { createClient } from "@/lib/supabase/client"
 
@@ -33,36 +33,34 @@ export function HeroSection() {
   return (
     <>
       <section className="relative overflow-hidden pt-24 pb-16 md:pt-32 md:pb-24 border-b border-border/40">
-        {/* Subtle background grid pattern */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] -z-10" />
+        {/* Modern Vibrant AI Background Glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1000px] h-[500px] bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-background to-background opacity-70 -z-10 blur-3xl pointer-events-none" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] -z-20" />
         
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto">
-            {/* Engineered Pre-Title Badge */}
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border/50 bg-background/50 backdrop-blur-sm px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/50">
-              <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse"></span>
-              ValiSearch Engine v2.0 Live
-              <div className="h-3 w-[1px] bg-border mx-1"></div>
-              <span className="text-primary flex items-center gap-1">
-                <Cpu className="h-3 w-3" /> 12 Parallel Agents
-              </span>
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center max-w-4xl mx-auto">
+            {/* Glowing Pill Badge */}
+            <div className="mb-8 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary shadow-[0_0_15px_rgba(var(--primary),0.2)] transition-all hover:shadow-[0_0_25px_rgba(var(--primary),0.3)]">
+              <Sparkles className="h-4 w-4" />
+              <span>ValiSearch Engine v2.0 is now live</span>
             </div>
             
-            {/* Outcome-Driven Headline */}
-            <h1 className="mb-6 text-5xl font-semibold tracking-tighter text-foreground md:text-7xl leading-[1.1]">
-              Validate your startup idea <br className="hidden md:block" />
-              <span className="text-muted-foreground">before you build.</span>
+            {/* Massive Gradient Headline */}
+            <h1 className="mb-6 text-5xl font-extrabold tracking-tight text-foreground md:text-7xl leading-[1.1]">
+              Validate your <br className="hidden md:block" />
+              <span className="bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">startup idea</span> in minutes.
             </h1>
             
             {/* Subheadline Explaining Mechanism */}
-            <p className="mx-auto mb-10 max-w-2xl text-lg text-muted-foreground leading-relaxed">
-              Deploy 12 specialized analytical agents to research your market, evaluate competitors, and score your concept with engineered precision in under 90 seconds.
+            <p className="mx-auto mb-10 max-w-2xl text-lg md:text-xl text-muted-foreground leading-relaxed">
+              Deploy 12 specialized analytical AI agents to research your market, evaluate competitors, and generate a deterministic viability score.
             </p>
           </div>
 
-          {/* Minimalist Command-Line Style Input */}
-          <div className="mx-auto max-w-2xl">
-            <div className={`relative rounded-xl border bg-background/60 backdrop-blur-xl shadow-sm transition-all duration-300 ${isFocused ? 'border-primary ring-1 ring-primary/20 shadow-md shadow-primary/5' : 'border-border/60 hover:border-border'}`}>
+          {/* Floating Glassmorphic Input Card */}
+          <div className="mx-auto max-w-2xl relative">
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary to-purple-600 rounded-2xl blur opacity-20 transition duration-1000 hover:opacity-100 hover:duration-200"></div>
+            <div className={`relative rounded-2xl border bg-background/80 backdrop-blur-2xl shadow-2xl transition-all duration-300 ${isFocused ? 'border-primary/50 shadow-[0_0_30px_rgba(var(--primary),0.15)]' : 'border-border/50 hover:border-border'}`}>
               <form
                 onSubmit={(e) => {
                   e.preventDefault()
@@ -71,20 +69,10 @@ export function HeroSection() {
                   }
                 }}
               >
-                <div className="flex items-center border-b border-border/40 px-4 py-3 bg-muted/20 rounded-t-xl">
-                  <div className="flex gap-1.5">
-                    <div className="h-2.5 w-2.5 rounded-full bg-red-500/80" />
-                    <div className="h-2.5 w-2.5 rounded-full bg-yellow-500/80" />
-                    <div className="h-2.5 w-2.5 rounded-full bg-green-500/80" />
-                  </div>
-                  <div className="mx-auto text-xs font-medium text-muted-foreground/70 flex items-center gap-1">
-                    <Activity className="h-3 w-3" /> valisearch-cli
-                  </div>
-                </div>
-                <div className="p-1">
+                <div className="p-2">
                   <Textarea
-                    placeholder="Describe your startup idea. E.g., 'A B2B SaaS platform that uses AI to automate local SEO and Google My Business profile management for small clinics...'"
-                    className="min-h-[140px] resize-none border-0 bg-transparent text-base focus-visible:ring-0 px-4 py-4 rounded-b-xl"
+                    placeholder="Describe your startup idea in a few sentences... E.g., 'An AI tool that helps YouTube creators remix their long-form videos into viral TikToks.'"
+                    className="min-h-[160px] resize-none border-0 bg-transparent text-base md:text-lg focus-visible:ring-0 px-5 py-5 rounded-t-xl placeholder:text-muted-foreground/60"
                     value={idea}
                     onChange={(e) => setIdea(e.target.value)}
                     onFocus={() => setIsFocused(true)}
@@ -92,40 +80,39 @@ export function HeroSection() {
                     maxLength={IDEA_MAX_LENGTH}
                   />
                 </div>
-                <div className="flex items-center justify-between border-t border-border/40 px-4 py-3 bg-muted/10 rounded-b-xl">
+                <div className="flex items-center justify-between border-t border-border/40 px-5 py-4 bg-muted/30 rounded-b-2xl">
                   <div className="flex items-center gap-3">
-                    <span className="text-xs font-medium text-muted-foreground">
+                    <span className="text-sm font-medium text-muted-foreground">
                       {wordCount} <span className="opacity-70">words</span>
                     </span>
-                    <div className="h-3 w-[1px] bg-border"></div>
-                    <span className="text-xs font-medium text-muted-foreground flex items-center gap-1">
-                       <Database className="h-3 w-3 opacity-70" /> {idea.length}/{IDEA_MAX_LENGTH} <span className="opacity-70">chars</span>
+                    <div className="h-4 w-[1px] bg-border"></div>
+                    <span className="text-sm font-medium text-muted-foreground">
+                       {idea.length}/{IDEA_MAX_LENGTH} <span className="opacity-70">chars</span>
                     </span>
                   </div>
-                  <Button type="submit" disabled={!canSubmit} size="sm" className="h-9 px-4 font-medium transition-all">
-                    Initialize Analysis
-                    <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                  <Button type="submit" disabled={!canSubmit} size="lg" className="h-11 px-6 font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all rounded-xl">
+                    <Zap className="mr-2 h-4 w-4" />
+                    Start Validation
                   </Button>
                 </div>
               </form>
             </div>
-            <div className="mt-4 flex items-center justify-center gap-4 text-xs font-medium text-muted-foreground/70">
-              <span className="flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5" /> No credit card required</span>
+            <div className="mt-6 flex items-center justify-center gap-4 text-sm font-medium text-muted-foreground">
+              <span className="flex items-center gap-1.5"><ShieldCheck className="h-4 w-4" /> No credit card required</span>
               <span className="h-1 w-1 rounded-full bg-border"></span>
-              <span>2 free analyses included</span>
+              <span>First 2 analyses are free</span>
             </div>
           </div>
           
           {/* Social Proof / Trust Band */}
-          <div className="mt-20 pt-10 border-t border-border/40">
-            <p className="text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground/60 mb-6">
-              Engineered for founders scaling at
+          <div className="mt-24 pt-10 border-t border-border/40">
+            <p className="text-center text-sm font-semibold uppercase tracking-wider text-muted-foreground/60 mb-8">
+              Empowering founders from top incubators
             </p>
-            <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-8 opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-              <div className="flex items-center gap-1 font-bold text-xl tracking-tighter"><div className="h-5 w-5 bg-foreground rounded-sm"></div> Acme Corp</div>
-              <div className="flex items-center gap-1 font-bold text-xl tracking-tighter"><div className="h-5 w-5 rounded-full border-2 border-foreground"></div> Globex</div>
-              <div className="flex items-center gap-1 font-bold text-xl tracking-tighter italic"><div className="h-0 w-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[16px] border-b-foreground"></div> Soylent</div>
-              <div className="flex items-center gap-1 font-bold text-xl tracking-tighter"><div className="h-5 w-5 border-2 border-foreground rotate-45"></div> Initech</div>
+            <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-8 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
+              <div className="flex items-center gap-2 font-bold text-2xl tracking-tighter"><div className="h-6 w-6 bg-foreground rounded-md"></div> YC Alumni</div>
+              <div className="flex items-center gap-2 font-bold text-2xl tracking-tighter"><div className="h-6 w-6 rounded-full border-4 border-foreground"></div> Techstars</div>
+              <div className="flex items-center gap-2 font-bold text-2xl tracking-tighter italic"><div className="h-0 w-0 border-l-[12px] border-l-transparent border-r-[12px] border-r-transparent border-b-[20px] border-b-foreground"></div> 500 Startups</div>
             </div>
           </div>
         </div>
