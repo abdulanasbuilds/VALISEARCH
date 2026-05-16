@@ -33,9 +33,10 @@ export const analyzeStartupIdea = task({
     let agentsCompleted = 0
 
     const result = await runOrchestrator({
-      idea: payload.idea,
-      userPlan: payload.userPlan,
-      analysisType: payload.analysisType,
+      ideaText: payload.idea,
+      userId: payload.userId,
+      analysisId: payload.analysisId,
+      plan: payload.userPlan,
       onAgentComplete: async (agentName: string, status: string) => {
         agentsCompleted++
         await metadata.set("agentsComplete", agentsCompleted)

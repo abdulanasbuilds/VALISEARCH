@@ -17,9 +17,10 @@ async function triggerTask(taskId: string, payload: any) {
   
   // Run in background (don't await)
   runAnalysis({
-    idea: payload.idea,
-    userPlan: payload.userPlan,
-    analysisType: payload.analysisType,
+    ideaText: payload.idea,
+    userId: payload.userId,
+    analysisId: payload.analysisId,
+    plan: payload.userPlan,
   }).catch(err => console.error("[Local Mode] Analysis failed:", err))
   
   return { id: `local-${Date.now()}` }
