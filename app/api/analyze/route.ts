@@ -6,7 +6,7 @@ import { runAnalysis } from "@/agents/orchestrator"
 async function triggerTask(taskId: string, payload: any) {
   if (process.env.TRIGGER_SECRET_KEY) {
     try {
-      const { tasks } = await import("@trigger.dev/sdk/v3")
+      const { tasks } = await import("@trigger.dev/sdk")
       return await tasks.trigger(taskId, payload)
     } catch (e) {
       console.error("[Trigger.dev] Failed to trigger task:", e)

@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { IDEA_MIN_LENGTH, IDEA_MAX_LENGTH } from "@/lib/constants"
+import { IDEA_MIN_LENGTH, IDEA_MAX_LENGTH, LS_PENDING_IDEA_KEY } from "@/lib/constants"
 import { getWordCount } from "@/lib/utils"
 import { Sparkles, Zap, ShieldCheck } from "lucide-react"
 import { AuthGateModal } from "@/components/auth/AuthGateModal"
@@ -15,17 +15,26 @@ export function HeroSection() {
   const [isFocused, setIsFocused] = useState(false)
 
   const wordCount = getWordCount(idea)
-  const canSubmit = wordCount >= 3
+  const canSubmit = wordCount >= 3 && idea.trim().length >= IDEA_MIN_LENGTH
 
   async function handleValidate() {
-    localStorage.setItem("valisearch_pending_idea", idea)
-    
-    const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    
-    if (user) {
-      window.location.href = "/workspace/new"
-    } else {
+    console.log("[Hero] Starting validation for idea:", idea)
+    try {
+      localStorage.setItem(LS_PENDING_IDEA_KEY, idea)
+      
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      console.log("[Hero] User check complete:", user ? "Authenticated" : "Anonymous")
+      
+      if (user) {
+        window.location.href = "/workspace/new"
+      } else {
+        setShowAuthModal(true)
+      }
+    } catch (err) {
+      console.error("[Hero] Validation handler failed:", err)
+      // Fallback: show modal anyway or try redirect
       setShowAuthModal(true)
     }
   }
@@ -58,7 +67,7 @@ export function HeroSection() {
           </div>
 
           {/* Floating Glassmorphic Input Card */}
-          <div className="mx-auto max-w-2xl relative">
+          <div className="mx-auto max-w-2xl relative z-20">
             <div className="absolute -inset-1 bg-gradient-to-r from-primary to-purple-600 rounded-2xl blur opacity-20 transition duration-1000 hover:opacity-100 hover:duration-200"></div>
             <div className={`relative rounded-2xl border bg-background/80 backdrop-blur-2xl shadow-2xl transition-all duration-300 ${isFocused ? 'border-primary/50 shadow-[0_0_30px_rgba(var(--primary),0.15)]' : 'border-border/50 hover:border-border'}`}>
               <form
@@ -100,7 +109,7 @@ export function HeroSection() {
             <div className="mt-6 flex items-center justify-center gap-4 text-sm font-medium text-muted-foreground">
               <span className="flex items-center gap-1.5"><ShieldCheck className="h-4 w-4" /> No credit card required</span>
               <span className="h-1 w-1 rounded-full bg-border"></span>
-              <span>First 2 analyses are free</span>
+              <span>First 6 analyses are free</span>
             </div>
           </div>
           

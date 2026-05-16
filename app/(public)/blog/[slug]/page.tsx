@@ -2,7 +2,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Calendar, Clock } from "lucide-react"
+import { ArrowLeft, Calendar, Clock, Share2, Bookmark } from "lucide-react"
 
 interface Props {
   params: Promise<{ slug: string }>
@@ -19,7 +19,7 @@ const POSTS: Record<string, {
   "12-ai-agents-validate-startup-idea": {
     title: "How 12 AI Agents Validate Your Startup Idea in Minutes",
     excerpt: "Traditional market research takes weeks. We built an agentic system that does it in seconds using 12 specialized AI agents working in parallel.",
-    date: "2026-05-10",
+    date: "May 10, 2026",
     category: "Product",
     readTime: "5 min read",
     content: `
@@ -64,7 +64,7 @@ Get started with 6 free credits when you sign up. Each credit runs a complete 12
   "why-founders-stuck-idea-validation": {
     title: "Why Most Founders Get Stuck in Idea Validation",
     excerpt: "The biggest blocker to starting isn't funding or talent - it's the fear that your idea isn't good enough. Here's how to break through.",
-    date: "2026-05-05",
+    date: "May 05, 2026",
     category: "Insights",
     readTime: "4 min read",
     content: `
@@ -103,7 +103,7 @@ The goal isn't to prove you're right - it's to learn what's true.
   "bootstrap-saas-ghana-2026": {
     title: "Bootstrapping a SaaS from Ghana: Lessons Learned",
     excerpt: "Building a global AI product from Accra, Ghana with zero external funding. The challenges, the wins, and what's next.",
-    date: "2026-04-28",
+    date: "Apr 28, 2026",
     category: "Founder Story",
     readTime: "6 min read",
     content: `
@@ -149,44 +149,72 @@ export default async function BlogPostPage({ params }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="mx-auto max-w-3xl px-6 py-20">
-        <Link href="/blog">
-          <Button variant="ghost" className="mb-6">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Blog
-          </Button>
-        </Link>
+    <div className="min-h-screen bg-background relative overflow-hidden">
+      {/* Background Decor */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1200px] h-[600px] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-background to-background opacity-50 -z-10 blur-3xl pointer-events-none" />
+
+      <div className="mx-auto max-w-3xl px-6 py-24 relative z-10">
+        <div className="mb-12">
+           <Link href="/blog">
+             <Button variant="outline" className="h-9 rounded-xl border-border/40 bg-background/50 backdrop-blur-sm group px-4">
+               <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+               Back to Library
+             </Button>
+           </Link>
+        </div>
 
         <article>
-          <div className="mb-6 flex items-center gap-4">
-            <Badge variant="secondary">{post.category}</Badge>
-            <span className="flex items-center gap-1 text-sm text-muted-foreground">
-              <Calendar className="h-4 w-4" />
-              {post.date}
-            </span>
-            <span className="flex items-center gap-1 text-sm text-muted-foreground">
-              <Clock className="h-4 w-4" />
-              {post.readTime}
-            </span>
-          </div>
+          <header className="mb-12">
+             <div className="flex flex-wrap items-center gap-4 mb-6">
+                <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 rounded-md font-mono text-[10px] tracking-widest uppercase py-1">
+                   {post.category}
+                </Badge>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
+                   <Calendar className="h-3.5 w-3.5" />
+                   {post.date}
+                </div>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
+                   <Clock className="h-3.5 w-3.5" />
+                   {post.readTime}
+                </div>
+             </div>
 
-          <h1 className="mb-6 text-4xl font-bold">{post.title}</h1>
+             <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-8 leading-[1.1]">
+                {post.title}
+             </h1>
 
-          <div className="prose prose-lg max-w-none">
+             <div className="flex items-center justify-between py-6 border-y border-border/40">
+                <div className="flex items-center gap-3">
+                   <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center font-bold text-white text-xs shadow-lg">AA</div>
+                   <div>
+                      <p className="text-sm font-bold">Abdul Anas</p>
+                      <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-widest">Systems Architect</p>
+                   </div>
+                </div>
+                <div className="flex items-center gap-2">
+                   <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full border border-border/40"><Share2 className="h-4 w-4" /></Button>
+                   <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full border border-border/40"><Bookmark className="h-4 w-4" /></Button>
+                </div>
+             </div>
+          </header>
+
+          <div className="prose prose-invert prose-lg max-w-none">
             {post.content.split("\n\n").map((paragraph, i) => {
               if (paragraph.startsWith("## ")) {
-                return <h2 key={i} className="mt-8 mb-4 text-2xl font-bold">{paragraph.replace("## ", "")}</h2>
+                return <h2 key={i} className="mt-12 mb-6 text-2xl font-bold tracking-tight text-foreground">{paragraph.replace("## ", "")}</h2>
               }
               if (paragraph.startsWith("### ")) {
-                return <h3 key={i} className="mt-6 mb-3 text-xl font-semibold">{paragraph.replace("### ", "")}</h3>
+                return <h3 key={i} className="mt-8 mb-4 text-xl font-bold text-foreground/90">{paragraph.replace("### ", "")}</h3>
               }
               if (paragraph.startsWith("- ")) {
                 const items = paragraph.split("\n").filter(p => p.startsWith("- "))
                 return (
-                  <ul key={i} className="my-4 list-disc pl-6">
+                  <ul key={i} className="my-6 space-y-3">
                     {items.map((item, j) => (
-                      <li key={j} className="mb-2">{item.replace("- ", "")}</li>
+                      <li key={j} className="flex items-start gap-3 text-muted-foreground leading-relaxed">
+                         <div className="h-1.5 w-1.5 rounded-full bg-primary shrink-0 mt-2.5" />
+                         <span>{item.replace("- ", "")}</span>
+                      </li>
                     ))}
                   </ul>
                 )
@@ -194,19 +222,34 @@ export default async function BlogPostPage({ params }: Props) {
               if (paragraph.startsWith("1. ")) {
                 const items = paragraph.split("\n").filter(p => p.match(/^\d+\. /))
                 return (
-                  <ol key={i} className="my-4 list-decimal pl-6">
+                  <ol key={i} className="my-6 space-y-4 counter-reset-item">
                     {items.map((item, j) => (
-                      <li key={j} className="mb-2">{item.replace(/^\d+\. /, "")}</li>
+                      <li key={j} className="flex gap-4 text-muted-foreground leading-relaxed">
+                         <span className="font-mono text-primary font-bold">{j+1}.</span>
+                         <span>{item.replace(/^\d+\. /, "")}</span>
+                      </li>
                     ))}
                   </ol>
                 )
               }
               return paragraph.trim() ? (
-                <p key={i} className="mb-4 text-muted-foreground">{paragraph}</p>
+                <p key={i} className="mb-6 text-muted-foreground leading-relaxed">
+                   {paragraph}
+                </p>
               ) : null
             })}
           </div>
         </article>
+
+        {/* Footer CTA */}
+        <div className="mt-24 p-8 md:p-12 rounded-3xl border border-primary/20 bg-primary/5 text-center relative overflow-hidden">
+           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl -z-10" />
+           <h3 className="text-2xl font-bold mb-4 tracking-tight">Ready to validate your own idea?</h3>
+           <p className="text-muted-foreground mb-8 max-w-md mx-auto leading-relaxed">Deploy our 12-agent intelligence engine and get a deterministic viability report in under 90 seconds.</p>
+           <Link href="/register">
+              <Button className="h-12 px-8 rounded-xl font-bold shadow-lg shadow-primary/20">Launch New Analysis</Button>
+           </Link>
+        </div>
       </div>
     </div>
   )

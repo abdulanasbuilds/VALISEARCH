@@ -46,7 +46,7 @@ export function AnalysisCard({
         <h3 className="font-semibold text-lg line-clamp-1 mb-2 group-hover:text-primary transition-colors">{title || "Untitled Execution"}</h3>
         
         <p className="mb-6 text-sm text-muted-foreground line-clamp-2 bg-muted/30 p-3 rounded-md border border-border/30 font-mono text-xs">
-          > {truncate(ideaText, 80)}
+          {">"} {truncate(ideaText, 80)}
         </p>
 
         <div className="flex items-center justify-between mt-auto">

@@ -1,4 +1,4 @@
-import { task, metadata } from "@trigger.dev/sdk/v3"
+import { task, metadata } from "@trigger.dev/sdk"
 import { runAnalysis as runOrchestrator } from "@/agents/orchestrator"
 import { createClient } from "@supabase/supabase-js"
 

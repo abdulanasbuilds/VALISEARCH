@@ -17,7 +17,7 @@ export function IdeaInputBox() {
   const [isFocused, setIsFocused] = useState(false)
 
   const wordCount = getWordCount(idea)
-  const canSubmit = wordCount >= 3
+  const canSubmit = wordCount >= 3 && idea.trim().length >= IDEA_MIN_LENGTH
 
   async function handleSubmit(e?: React.FormEvent) {
     if (e) e.preventDefault()
@@ -38,7 +38,7 @@ export function IdeaInputBox() {
       const response = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ideaText: idea, analysisType: "full" }),
+        body: JSON.stringify({ idea, analysisType: "full" }),
       })
 
       const data = await response.json()
