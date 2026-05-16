@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { sanitizeIdea } from "@/lib/utils"
 import { runAnalysis } from "@/agents/orchestrator"
-import { tasks } from "@trigger.dev/sdk/v3"
 
 async function triggerTask(taskId: string, payload: any) {
   if (process.env.TRIGGER_SECRET_KEY) {
     try {
+      const { tasks } = await import("@trigger.dev/sdk/v3")
       return await tasks.trigger(taskId, payload)
     } catch (e) {
       console.error("[Trigger.dev] Failed to trigger task:", e)

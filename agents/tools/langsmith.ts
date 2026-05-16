@@ -1,16 +1,22 @@
-import { Client } from "langsmith"
+// LangSmith tracing client — dynamically imported so it's optional at runtime
+// Avoids "Module not found" errors when langsmith is not installed
 
-let langsmithClient: Client | null = null
+let langsmithClient: { createRun: Function; updateRun: Function } | null = null
 
-function getClient(): Client | null {
+async function getClient(): Promise<{ createRun: Function; updateRun: Function } | null> {
   if (typeof process.env.LANGCHAIN_API_KEY === "undefined") {
     return null
   }
   if (!langsmithClient) {
-    langsmithClient = new Client({
-      apiKey: process.env.LANGCHAIN_API_KEY,
-      projectName: process.env.LANGCHAIN_PROJECT ?? "valisearch",
-    })
+    try {
+      const { Client } = await import("langsmith")
+      langsmithClient = new Client({
+        apiKey: process.env.LANGCHAIN_API_KEY,
+        projectName: process.env.LANGCHAIN_PROJECT ?? "valisearch",
+      })
+    } catch {
+      return null
+    }
   }
   return langsmithClient
 }
@@ -27,7 +33,7 @@ export async function traceAgentCall<T>(
   metadata: TraceMetadata,
   fn: () => Promise<T>
 ): Promise<T> {
-  const client = getClient()
+  const client = await getClient()
   if (!client) return fn()
 
   const runId = crypto.randomUUID()
@@ -65,13 +71,13 @@ export async function traceAgentCall<T>(
 
     return result
   } catch (error) {
-    await client.updateRun(runId, {
-      end_time: Date.now(),
-      status: "error",
-      error: error instanceof Error
-        ? error.message
-        : "Unknown error",
-    })
+    try {
+      await client.updateRun(runId, {
+        end_time: Date.now(),
+        status: "error",
+        error: error instanceof Error ? error.message : "Unknown error",
+      })
+    } catch { /* ignore tracing errors */ }
     throw error
   }
 }
