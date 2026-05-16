@@ -88,23 +88,22 @@ async function runCompetitorIntelInner(context: AgentContext): Promise<Competito
 
     const directCompetitors = competitorNames.slice(0, 4).map((name) => ({
       name,
+      url: serperResults.results.find(r => r.title.includes(name))?.link ?? "",
       description: "Competitor in same space",
+      pricing: "$10-$50/month",
       strengths: ["Brand recognition", "Existing user base"],
       weaknesses: ["High pricing", "Limited to specific markets"],
-      price_range: "$10-$50/month",
-      funding: "Undisclosed",
-      market_share: "Unknown",
-      source: serperResults.results.find(r => r.title.includes(name))?.link ?? "",
+      market_position: "Established player",
     }))
 
     const indirectCompetitors = competitorNames.slice(4, 8).map((name) => ({
       name,
+      url: "",
       description: "Adjacent solution provider",
+      pricing: "$0-$30/month",
       strengths: ["Related domain expertise"],
       weaknesses: ["Not direct match to this solution"],
-      price_range: "$0-$30/month",
-      funding: "Undisclosed",
-      source: "",
+      market_position: "Emerging competitor",
     }))
 
     return {
