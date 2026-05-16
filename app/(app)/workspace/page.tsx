@@ -36,26 +36,30 @@ export default async function WorkspacePage() {
     .limit(20)
 
   return (
-    <div className="p-6">
-      <div className="mb-8 flex items-center justify-between">
+    <div className="p-8 max-w-7xl mx-auto">
+      <div className="mb-10 flex items-center justify-between border-b border-border/40 pb-6">
         <div>
-          <h1 className="text-2xl font-bold">Your Workspace</h1>
-          <p className="text-muted-foreground">
-            {analyses?.length ?? 0} analysis{analyses?.length === 1 ? "" : "es"}
+          <h1 className="text-3xl font-bold tracking-tight">Active Workspaces</h1>
+          <p className="text-muted-foreground mt-1">
+            Manage your deterministic startup viability analyses. ({analyses?.length ?? 0} total)
           </p>
         </div>
         <Link href="/workspace/new">
-          <Button>
+          <Button className="shadow-lg shadow-primary/20">
             <PlusCircle className="mr-2 h-4 w-4" />
-            New Analysis
+            Initialize Engine
           </Button>
         </Link>
       </div>
 
       <IdeaInputBox />
 
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="text-lg font-semibold tracking-tight">Execution History</h2>
+      </div>
+
       {analyses && analyses.length > 0 ? (
-        <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {analyses.map((analysis: any) => (
             <Link key={analysis.id} href={`/workspace/${analysis.id}`}>
               <AnalysisCard

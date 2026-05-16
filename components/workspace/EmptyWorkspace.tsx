@@ -1,28 +1,15 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Rocket, ArrowRight } from "lucide-react"
-import Link from "next/link"
+import { Terminal } from "lucide-react"
 
 export function EmptyWorkspace() {
   return (
-    <div className="flex min-h-[400px] flex-col items-center justify-center p-8">
-      <Card className="w-full max-w-md">
-        <CardContent className="pt-8 pb-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-            <Rocket className="h-8 w-8 text-primary" />
-          </div>
-          <h2 className="mb-2 text-xl font-semibold">No analyses yet</h2>
-          <p className="mb-6 text-muted-foreground">
-            Start by validating your first startup idea. It only takes 2 minutes.
-          </p>
-          <Link href="/workspace/new">
-            <Button>
-              Create Your First Analysis
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-        </CardContent>
-      </Card>
+    <div className="flex min-h-[300px] flex-col items-center justify-center p-8 border border-dashed border-border/40 rounded-xl bg-muted/5 mt-8">
+      <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 border border-primary/20">
+        <Terminal className="h-6 w-6 text-primary" />
+      </div>
+      <h2 className="mb-2 text-lg font-mono font-semibold tracking-tight">SYSTEM STANDBY</h2>
+      <p className="text-sm text-muted-foreground font-mono text-center max-w-sm">
+        No analytical pipelines have been executed in this environment yet. Use the initialization interface above to begin.
+      </p>
     </div>
   )
 }
