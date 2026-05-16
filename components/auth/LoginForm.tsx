@@ -61,6 +61,7 @@ export function LoginForm() {
           type="email"
           placeholder="you@example.com"
           {...register("email")}
+          autoComplete="email"
         />
         {errors.email && (
           <p className="text-sm text-destructive">{errors.email.message}</p>
@@ -79,6 +80,7 @@ export function LoginForm() {
           type="password"
           placeholder="Enter your password"
           {...register("password")}
+          autoComplete="current-password"
         />
         {errors.password && (
           <p className="text-sm text-destructive">{errors.password.message}</p>

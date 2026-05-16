@@ -64,6 +64,7 @@ export function RegisterForm() {
           id="fullName"
           placeholder="John Doe"
           {...register("fullName")}
+          autoComplete="name"
         />
         {errors.fullName && (
           <p className="text-sm text-destructive">{errors.fullName.message}</p>
@@ -77,6 +78,7 @@ export function RegisterForm() {
           type="email"
           placeholder="you@example.com"
           {...register("email")}
+          autoComplete="email"
         />
         {errors.email && (
           <p className="text-sm text-destructive">{errors.email.message}</p>
@@ -90,6 +92,7 @@ export function RegisterForm() {
           type="password"
           placeholder="Create a password"
           {...register("password")}
+          autoComplete="new-password"
         />
         {errors.password && (
           <p className="text-sm text-destructive">{errors.password.message}</p>
@@ -103,6 +106,7 @@ export function RegisterForm() {
           type="password"
           placeholder="Confirm your password"
           {...register("confirmPassword")}
+          autoComplete="new-password"
         />
         {errors.confirmPassword && (
           <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>

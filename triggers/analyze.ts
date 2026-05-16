@@ -1,5 +1,5 @@
 import { task, metadata } from "@trigger.dev/sdk/v3"
-import { runOrchestrator } from "@/agents/orchestrator"
+import { runAnalysis as runOrchestrator } from "@/agents/orchestrator"
 import { createClient } from "@supabase/supabase-js"
 
 export const analyzeStartupIdea = task({

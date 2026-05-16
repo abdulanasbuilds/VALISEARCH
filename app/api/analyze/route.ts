@@ -1,10 +1,28 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { sanitizeIdea } from "@/lib/utils"
+import { runAnalysis } from "@/agents/orchestrator"
+import { tasks } from "@trigger.dev/sdk/v3"
 
-async function triggerTask(taskId: string, payload: unknown) {
-  console.log(`[Trigger.dev] Would trigger task ${taskId} with:`, payload)
-  return { id: `mock-${Date.now()}` }
+async function triggerTask(taskId: string, payload: any) {
+  if (process.env.TRIGGER_SECRET_KEY) {
+    try {
+      return await tasks.trigger(taskId, payload)
+    } catch (e) {
+      console.error("[Trigger.dev] Failed to trigger task:", e)
+    }
+  }
+  
+  console.log(`[Local Mode] Running analysis orchestrator directly for task ${taskId}`)
+  
+  // Run in background (don't await)
+  runAnalysis({
+    idea: payload.idea,
+    userPlan: payload.userPlan,
+    analysisType: payload.analysisType,
+  }).catch(err => console.error("[Local Mode] Analysis failed:", err))
+  
+  return { id: `local-${Date.now()}` }
 }
 
 export const runtime = "nodejs"
