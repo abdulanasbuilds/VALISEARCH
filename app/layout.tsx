@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Inter, JetBrains_Mono } from "next/font/google"
 import { Toaster } from "@/components/ui/sonner"
+import { ThemeProvider } from "@/components/theme-provider"
 import "./globals.css"
 
 const inter = Inter({
@@ -40,11 +41,18 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body 
-        className="min-h-full flex flex-col bg-background text-foreground font-sans"
+        className="min-h-full flex flex-col bg-background text-foreground font-sans bg-gradient-premium"
         suppressHydrationWarning
       >
-        {children}
-        <Toaster position="bottom-right" richColors closeButton />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem={true}
+          disableTransitionOnChange
+        >
+          {children}
+          <Toaster position="bottom-right" richColors closeButton />
+        </ThemeProvider>
       </body>
     </html>
   )
