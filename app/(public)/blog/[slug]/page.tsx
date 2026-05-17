@@ -1,255 +1,331 @@
+"use client"
+
+import { use, useEffect, useState } from "react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import { POSTS, BlogPost } from "@/lib/blog"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ArrowLeft, Calendar, Clock, Share2, Bookmark } from "lucide-react"
+import { 
+  ArrowLeft, 
+  Calendar, 
+  Clock, 
+  Share2, 
+  Bookmark, 
+  ArrowRight, 
+  Sparkles,
+  Info,
+  CheckCircle2
+} from "lucide-react"
 
 interface Props {
   params: Promise<{ slug: string }>
 }
 
-const POSTS: Record<string, {
-  title: string
-  excerpt: string
-  content: string
-  date: string
-  category: string
-  readTime: string
-}> = {
-  "12-ai-agents-validate-startup-idea": {
-    title: "How 12 AI Agents Validate Your Startup Idea in Minutes",
-    excerpt: "Traditional market research takes weeks. We built an agentic system that does it in seconds using 12 specialized AI agents working in parallel.",
-    date: "May 10, 2026",
-    category: "Product",
-    readTime: "5 min read",
-    content: `
-## The Problem with Traditional Market Research
-
-When you're validating a startup idea, you need answers to critical questions:
-- Is there real demand for this?
-- Who are my competitors?
-- What's the actual market size?
-- What are the growth channels?
-
-Traditionally, this takes weeks of manual research, surveys, and interviews. Most founders never get past this phase because it's overwhelming and time-consuming.
-
-## Introducing the 12-Agent Validation System
-
-We built ValiSearch to solve this problem. Here's how it works:
-
-### 1. Idea Validator Agent
-Scores your idea across 6 key dimensions: clarity, feasibility, market fit, scalability, timing, and differentiation.
-
-### 2. Market Researcher Agent
-Researches TAM, SAM, and SOM using web search. Finds industry reports, market trends, and growth projections.
-
-### 3. Competitor Intel Agent
-Identifies direct and indirect competitors. Analyzes their positioning, pricing, strengths, and weaknesses.
-
-### 4. Problem Prioritizer Agent
-Validates pain points by analyzing Reddit, Hacker News, and social discussions. Scores severity and frequency.
-
-### 5-12. Seven More Specialized Agents
-Product Manager, Offer Architect, Growth Strategist, Distribution Planner, Content Creator, Brand Namer, and Scale Architect each provide deep insights in their domain.
-
-## The Secret: Parallel Execution
-
-All 12 agents run simultaneously using Promise.allSettled(), completing in under 90 seconds. The Synthesis Agent then cross-references all outputs to generate a unified verdict.
-
-## Try It Yourself
-
-Get started with 6 free credits when you sign up. Each credit runs a complete 12-agent analysis.
-    `,
-  },
-  "why-founders-stuck-idea-validation": {
-    title: "Why Most Founders Get Stuck in Idea Validation",
-    excerpt: "The biggest blocker to starting isn't funding or talent - it's the fear that your idea isn't good enough. Here's how to break through.",
-    date: "May 05, 2026",
-    category: "Insights",
-    readTime: "4 min read",
-    content: `
-## The Validation Trap
-
-You've got an idea. It's been in your head for months. You've told friends, asked on Twitter, maybe even built a prototype. But you still haven't launched.
-
-Why?
-
-## The Root Cause: Perfectionism Masquerading as Research
-
-We call it "validation" but often it's just procrastination with a fancy name. We tell ourselves we need:
-- More market research
-- More competitor analysis
-- More customer interviews
-- More certainty
-
-But here's the truth: you'll never have 100% certainty. Every successful startup launched with incomplete information.
-
-## The Fix: Minimum Viable Validation
-
-Instead of trying to prove your idea will succeed, try to prove it won't. This flips the mindset:
-
-1. **Identify your riskiest assumption**
-2. **Design the cheapest test**
-3. **Run it in 48 hours**
-4. **Decide: pivot, proceed, or pause**
-
-## How ValiSearch Helps
-
-Our 12-agent system gives you a comprehensive validation in minutes, not weeks. It won't eliminate all uncertainty, but it will give you a data-backed foundation to make your decision.
-
-The goal isn't to prove you're right - it's to learn what's true.
-    `,
-  },
-  "bootstrap-saas-ghana-2026": {
-    title: "Bootstrapping a SaaS from Ghana: Lessons Learned",
-    excerpt: "Building a global AI product from Accra, Ghana with zero external funding. The challenges, the wins, and what's next.",
-    date: "Apr 28, 2026",
-    category: "Founder Story",
-    readTime: "6 min read",
-    content: `
-## Why Ghana?
-
-I'm Abdul Anas, a solo founder building ValiSearch from Accra, Ghana. No VC funding. No accelerator. Just a laptop, Claude, and a lot of determination.
-
-## The Challenges
-
-### 1. Payment Processing
-Most global payment processors don't support Ghana. We had to integrate multiple gateways (Flutterwave, Paystack) just to accept payments.
-
-### 2. Internet Reliability
-Power cuts and internet outages are common. I've learned to build offline-first workflows and use tools that sync when connectivity returns.
-
-### 3. Time Zone Isolation
-Everyone I need to talk to is in a different time zone. Early morning calls with US customers, late night calls with European ones.
-
-## The Wins
-
-### 1. Zero Overhead
-No employees means no payroll stress. Every dollar earned goes back into product.
-
-### 2. Rapid Iteration
-With no board or investors to please, I can ship features in hours, not quarters.
-
-### 3. Global from Day One
-Building for the world from the start, not just the local market.
-
-## What's Next
-
-We're just getting started. The goal is to prove that world-class products can be built anywhere. Follow along.
-    `,
-  },
-}
-
-export default async function BlogPostPage({ params }: Props) {
-  const { slug } = await params
+export default function BlogPostPage({ params }: Props) {
+  const { slug } = use(params)
   const post = POSTS[slug]
+
+  const [activeHeading, setActiveHeading] = useState<string>("")
+  const [copied, setCopied] = useState(false)
 
   if (!post) {
     notFound()
   }
 
+  // Retrieve top 3 other posts for recommendation
+  const nextUpPosts = Object.values(POSTS)
+    .filter((p) => p.slug !== slug)
+    .slice(0, 3)
+
+  // Dynamically extract H2 headings for Table of Contents
+  const headings = post.content
+    .filter((c) => c.type === "heading2")
+    .map((c) => c.text)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const headingElements = headings.map((h) => {
+        const id = h.toLowerCase().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-")
+        return document.getElementById(id)
+      })
+
+      const scrollPosition = window.scrollY + 200
+
+      for (let i = headingElements.length - 1; i >= 0; i--) {
+        const el = headingElements[i]
+        if (el && scrollPosition >= el.offsetTop) {
+          setActiveHeading(headings[i])
+          break
+        }
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll)
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [headings])
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(window.location.href)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
+    <div className="min-h-screen bg-background relative text-foreground">
       {/* Background Decor */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1200px] h-[600px] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-background to-background opacity-50 -z-10 blur-3xl pointer-events-none" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1200px] h-[500px] bg-primary/5 blur-[120px] -z-10 rounded-full pointer-events-none" />
 
-      <div className="mx-auto max-w-3xl px-6 py-24 relative z-10">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-20">
+        
+        {/* Back Button */}
         <div className="mb-12">
-           <Link href="/blog">
-             <Button variant="outline" className="h-9 rounded-xl border-border/40 bg-background/50 backdrop-blur-sm group px-4">
-               <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
-               Back to Library
-             </Button>
-           </Link>
+          <Link href="/blog">
+            <Button variant="ghost" className="h-10 px-4 border border-subtle hover:bg-muted rounded-lg group text-xs font-mono uppercase tracking-wider">
+              <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+              Back to Library
+            </Button>
+          </Link>
         </div>
 
-        <article>
-          <header className="mb-12">
-             <div className="flex flex-wrap items-center gap-4 mb-6">
-                <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20 rounded-md font-mono text-[10px] tracking-widest uppercase py-1">
-                   {post.category}
+        {/* Dynamic Multi-Column Hub Layout */}
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+          
+          {/* Main Article Workspace: Left 8 Columns */}
+          <article className="lg:col-span-8">
+            <header className="mb-12 border-b border-subtle pb-8">
+              <div className="flex flex-wrap items-center gap-4 mb-6">
+                <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary rounded py-1 px-3 uppercase text-[10px] font-mono tracking-widest">
+                  {post.category}
                 </Badge>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
-                   <Calendar className="h-3.5 w-3.5" />
-                   {post.date}
+                <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
+                  <Calendar className="h-3.5 w-3.5" />
+                  {post.date}
                 </div>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
-                   <Clock className="h-3.5 w-3.5" />
-                   {post.readTime}
+                <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
+                  <Clock className="h-3.5 w-3.5" />
+                  {post.readTime}
                 </div>
-             </div>
+              </div>
 
-             <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-8 leading-[1.1]">
+              <h1 className="text-3xl md:text-5xl font-bold tracking-tight mb-8 leading-tight text-foreground">
                 {post.title}
-             </h1>
+              </h1>
 
-             <div className="flex items-center justify-between py-6 border-y border-border/40">
+              {/* Author and Social Shares */}
+              <div className="flex items-center justify-between py-4 border-t border-subtle">
                 <div className="flex items-center gap-3">
-                   <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-purple-600 flex items-center justify-center font-bold text-white text-xs shadow-lg">AA</div>
-                   <div>
-                      <p className="text-sm font-bold">Abdul Anas</p>
-                      <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-widest">Systems Architect</p>
-                   </div>
+                  <div className="h-10 w-10 rounded-full bg-foreground text-background flex items-center justify-center font-bold text-sm shadow-sm">
+                    {post.author.avatarText}
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-foreground">{post.author.name}</p>
+                    <p className="text-[10px] text-muted-foreground font-mono uppercase tracking-widest leading-none">{post.author.role}</p>
+                  </div>
                 </div>
+                
                 <div className="flex items-center gap-2">
-                   <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full border border-border/40"><Share2 className="h-4 w-4" /></Button>
-                   <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full border border-border/40"><Bookmark className="h-4 w-4" /></Button>
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    onClick={copyToClipboard}
+                    className="h-9 w-9 rounded-lg border border-subtle"
+                  >
+                    {copied ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <Share2 className="h-4 w-4" />}
+                  </Button>
+                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg border border-subtle">
+                    <Bookmark className="h-4 w-4" />
+                  </Button>
                 </div>
-             </div>
-          </header>
+              </div>
+            </header>
 
-          <div className="prose prose-invert prose-lg max-w-none">
-            {post.content.split("\n\n").map((paragraph, i) => {
-              if (paragraph.startsWith("## ")) {
-                return <h2 key={i} className="mt-12 mb-6 text-2xl font-bold tracking-tight text-foreground">{paragraph.replace("## ", "")}</h2>
-              }
-              if (paragraph.startsWith("### ")) {
-                return <h3 key={i} className="mt-8 mb-4 text-xl font-bold text-foreground/90">{paragraph.replace("### ", "")}</h3>
-              }
-              if (paragraph.startsWith("- ")) {
-                const items = paragraph.split("\n").filter(p => p.startsWith("- "))
-                return (
-                  <ul key={i} className="my-6 space-y-3">
-                    {items.map((item, j) => (
-                      <li key={j} className="flex items-start gap-3 text-muted-foreground leading-relaxed">
-                         <div className="h-1.5 w-1.5 rounded-full bg-primary shrink-0 mt-2.5" />
-                         <span>{item.replace("- ", "")}</span>
-                      </li>
-                    ))}
-                  </ul>
-                )
-              }
-              if (paragraph.startsWith("1. ")) {
-                const items = paragraph.split("\n").filter(p => p.match(/^\d+\. /))
-                return (
-                  <ol key={i} className="my-6 space-y-4 counter-reset-item">
-                    {items.map((item, j) => (
-                      <li key={j} className="flex gap-4 text-muted-foreground leading-relaxed">
-                         <span className="font-mono text-primary font-bold">{j+1}.</span>
-                         <span>{item.replace(/^\d+\. /, "")}</span>
-                      </li>
-                    ))}
-                  </ol>
-                )
-              }
-              return paragraph.trim() ? (
-                <p key={i} className="mb-6 text-muted-foreground leading-relaxed">
-                   {paragraph}
-                </p>
-              ) : null
-            })}
-          </div>
-        </article>
+            {/* Core Reading content container locked between 650px - 750px width */}
+            <div className="prose prose-invert max-w-[700px] mx-auto text-[16px] md:text-[18px] leading-relaxed text-muted-foreground space-y-8">
+              {post.content.map((block, idx) => {
+                const elementId = block.type === "heading2" 
+                  ? block.text.toLowerCase().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-")
+                  : undefined
 
-        {/* Footer CTA */}
-        <div className="mt-24 p-8 md:p-12 rounded-3xl border border-primary/20 bg-primary/5 text-center relative overflow-hidden">
-           <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl -z-10" />
-           <h3 className="text-2xl font-bold mb-4 tracking-tight">Ready to validate your own idea?</h3>
-           <p className="text-muted-foreground mb-8 max-w-md mx-auto leading-relaxed">Deploy our 12-agent intelligence engine and get a deterministic viability report in under 90 seconds.</p>
-           <Link href="/register">
-              <Button className="h-12 px-8 rounded-xl font-bold shadow-lg shadow-primary/20">Launch New Analysis</Button>
-           </Link>
+                switch(block.type) {
+                  case "paragraph":
+                    return (
+                      <p 
+                        key={idx} 
+                        className="text-muted-foreground text-lg leading-relaxed font-sans"
+                        dangerouslySetInnerHTML={{ __html: block.text }}
+                      />
+                    )
+
+                  case "heading2":
+                    return (
+                      <h2 
+                        id={elementId}
+                        key={idx} 
+                        className="text-2xl md:text-3xl font-bold tracking-tight text-foreground mt-12 mb-4 pt-4 border-b border-subtle pb-2"
+                      >
+                        {block.text}
+                      </h2>
+                    )
+
+                  case "heading3":
+                    return (
+                      <h3 
+                        key={idx} 
+                        className="text-xl font-bold text-foreground/90 mt-8 mb-3"
+                      >
+                        {block.text}
+                      </h3>
+                    )
+
+                  case "bullet":
+                    return (
+                      <ul key={idx} className="my-6 space-y-4 pl-0">
+                        {block.items?.map((item, i) => (
+                          <li key={i} className="flex items-start gap-3 text-muted-foreground text-base md:text-lg leading-relaxed">
+                            <div className="h-1.5 w-1.5 rounded-full bg-primary shrink-0 mt-3" />
+                            <span dangerouslySetInnerHTML={{ __html: item }} />
+                          </li>
+                        ))}
+                      </ul>
+                    )
+
+                  case "numbered":
+                    return (
+                      <ol key={idx} className="my-6 space-y-4 pl-0">
+                        {block.items?.map((item, i) => (
+                          <li key={i} className="flex items-start gap-4 text-muted-foreground text-base md:text-lg leading-relaxed">
+                            <span className="font-mono text-primary font-bold text-sm mt-0.5">{String(i + 1).padStart(2, '0')}.</span>
+                            <span dangerouslySetInnerHTML={{ __html: item }} />
+                          </li>
+                        ))}
+                      </ol>
+                    )
+
+                  case "callout":
+                    const calloutStyles = block.calloutType === "warning"
+                      ? "border-amber-500/20 bg-amber-500/5 text-amber-200"
+                      : block.calloutType === "note"
+                      ? "border-blue-500/20 bg-blue-500/5 text-blue-200"
+                      : "border-green-500/20 bg-green-500/5 text-green-200" // tip default
+
+                    return (
+                      <div 
+                        key={idx} 
+                        className={`p-5 rounded-xl border flex gap-3 text-sm md:text-base leading-relaxed ${calloutStyles}`}
+                      >
+                        <Info className="h-5 w-5 shrink-0 mt-0.5 opacity-80" />
+                        <div>
+                          <span className="font-bold block uppercase tracking-wider text-[10px] font-mono opacity-80 mb-1">{block.calloutType || "Tip"}</span>
+                          <span dangerouslySetInnerHTML={{ __html: block.text }} />
+                        </div>
+                      </div>
+                    )
+
+                  default:
+                    return null
+                }
+              })}
+            </div>
+          </article>
+
+          {/* Sticky Sidebar Component: Right 4 Columns */}
+          <aside className="lg:col-span-4 sticky top-28 space-y-8 hidden lg:block">
+            
+            {/* Table of Contents Widget */}
+            <div className="border border-subtle rounded-2xl p-6 bg-muted/10 shadow-sm">
+              <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest block mb-4 border-b border-subtle pb-2">
+                Table of Contents
+              </span>
+              <ul className="space-y-3">
+                {headings.map((heading) => {
+                  const headingId = heading.toLowerCase().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-")
+                  const isCurrent = activeHeading === heading
+                  
+                  return (
+                    <li key={heading}>
+                      <a 
+                        href={`#${headingId}`}
+                        className={`text-xs font-semibold block transition-colors leading-normal ${
+                          isCurrent 
+                            ? "text-primary pl-2 border-l-2 border-primary" 
+                            : "text-muted-foreground hover:text-foreground pl-2 border-l border-subtle"
+                        }`}
+                      >
+                        {heading}
+                      </a>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+
+            {/* High-Converting native Lead Widget */}
+            <div className="border border-primary/20 rounded-2xl p-6 bg-primary/5 shadow-sm relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 blur-3xl -z-10 rounded-full" />
+              <div className="mb-4 inline-flex items-center gap-1 rounded-full bg-primary/10 border border-primary/20 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-primary">
+                <Sparkles className="h-3 w-3" />
+                Validation Platform
+              </div>
+              <h4 className="text-lg font-bold tracking-tight text-foreground mb-2">
+                Audit your startup idea in under 90s.
+              </h4>
+              <p className="text-xs text-muted-foreground leading-relaxed mb-6">
+                Deploy 12 parallel AI agents to audit market trends, competitors, and unit economics with a single click.
+              </p>
+              <Link href="/register">
+                <Button className="w-full h-11 rounded-lg font-semibold flex items-center justify-center gap-2">
+                  Launch Free Validation
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
+
+          </aside>
+
         </div>
+
+        {/* Bottom Next Up Recommendation Section */}
+        <section className="mt-32 pt-16 border-t border-subtle">
+          <div className="mb-12 flex items-center justify-between">
+            <h3 className="text-2xl font-bold tracking-tight text-foreground">
+              Next Up.
+            </h3>
+            <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest">
+              More strategic deep-dives
+            </span>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {nextUpPosts.map((post) => (
+              <div 
+                key={post.slug}
+                className="surface-card p-6 rounded-2xl border border-subtle hover:border-primary/50 transition-colors flex flex-col justify-between"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-[10px] font-mono uppercase text-primary font-bold tracking-widest">{post.category}</span>
+                    <span className="text-xs text-muted-foreground font-mono">{post.readTime}</span>
+                  </div>
+                  <h4 className="text-lg font-bold tracking-tight text-foreground mb-2 leading-snug">
+                    {post.title}
+                  </h4>
+                  <p className="text-xs text-muted-foreground leading-relaxed truncate-2-lines">
+                    {post.excerpt}
+                  </p>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-subtle flex justify-end">
+                  <Link href={`/blog/${post.slug}`} className="text-xs font-bold flex items-center gap-1 hover:text-primary transition-colors">
+                    Read Article
+                    <ArrowRight className="h-3 w-3" />
+                  </Link>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
       </div>
     </div>
   )
