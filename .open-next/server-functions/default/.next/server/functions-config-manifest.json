@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "functions": {
+    "/": {},
+    "/about": {},
+    "/api/analyze": {},
+    "/auth/callback": {},
+    "/blog": {},
+    "/blog/[slug]": {},
+    "/changelog": {},
+    "/dashboard": {},
+    "/dashboard/chat": {},
+    "/dashboard/flows": {},
+    "/dashboard/health": {},
+    "/dashboard/tasks": {},
+    "/forgot-password": {},
+    "/login": {},
+    "/onboarding": {},
+    "/pricing": {},
+    "/privacy": {},
+    "/register": {},
+    "/settings": {},
+    "/settings/billing": {},
+    "/terms": {},
+    "/workspace": {},
+    "/workspace/[id]": {},
+    "/workspace/new": {}
+  }
+}
