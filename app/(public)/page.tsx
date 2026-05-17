@@ -1,3 +1,5 @@
+export const runtime = "edge"
+
 import { HeroSection } from "@/components/landing/HeroSection"
 import { HowItWorks } from "@/components/landing/HowItWorks"
 import { FeatureGrid } from "@/components/landing/FeatureGrid"

@@ -1,4 +1,5 @@
 export const dynamic = "force-dynamic"
+export const runtime = "edge"
 
 import { LoginForm } from "@/components/auth/LoginForm"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
