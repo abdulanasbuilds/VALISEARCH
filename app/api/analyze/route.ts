@@ -13,15 +13,101 @@ async function triggerTask(taskId: string, payload: any) {
     }
   }
   
-  console.log(`[Local Mode] Running analysis orchestrator directly for task ${taskId}`)
+  console.log(`[Local Mode] Running analysis orchestrator directly for task ${taskId}`);
   
   // Run in background (don't await)
-  runAnalysis({
-    ideaText: payload.idea,
-    userId: payload.userId,
-    analysisId: payload.analysisId,
-    plan: payload.userPlan,
-  }).catch(err => console.error("[Local Mode] Analysis failed:", err))
+  (async () => {
+    try {
+      const { createClient: createSupabaseClient } = await import("@supabase/supabase-js")
+      const supabase = createSupabaseClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+      )
+
+      await supabase
+        .from("analysis")
+        .update({
+          status: "processing",
+        })
+        .eq("id", payload.analysisId)
+
+      let agentsCompleted = 0
+
+      const result = await runAnalysis(
+        {
+          ideaText: payload.idea,
+          userId: payload.userId,
+          analysisId: payload.analysisId,
+          plan: payload.userPlan,
+        },
+        async (agentName, status) => {
+          agentsCompleted++
+          await supabase
+            .from("analysis_progress")
+            .upsert({
+              analysis_id: payload.analysisId,
+              agent_name: agentName,
+              status,
+              completed_at: new Date().toISOString(),
+            })
+        }
+      )
+
+      await supabase
+        .from("analysis")
+        .update({
+          status: "complete",
+          result_json: result as unknown as Record<string, unknown>,
+          overall_score: result.synthesis?.overall_score ?? null,
+          verdict: result.synthesis?.verdict ?? null,
+          completed_at: new Date().toISOString(),
+          processing_time_ms: Date.now(),
+        })
+        .eq("id", payload.analysisId)
+
+      const creditsToDeduct = payload.analysisType === "quick" ? 1 : 2
+
+      const { data: creditsData } = await supabase
+        .from("credits")
+        .select("balance")
+        .eq("user_id", payload.userId)
+        .single()
+
+      const currentBalance = creditsData?.balance ?? 0
+      const newBalance = Math.max(0, currentBalance - creditsToDeduct)
+
+      await supabase
+        .from("credits")
+        .update({ balance: newBalance })
+        .eq("user_id", payload.userId)
+
+      await supabase.from("credit_transactions").insert({
+        user_id: payload.userId,
+        amount: -creditsToDeduct,
+        reason: payload.analysisType === "quick"
+          ? "quick_analysis"
+          : "full_analysis",
+        analysis_id: payload.analysisId,
+      })
+    } catch (err) {
+      console.error("[Local Mode] Analysis failed:", err)
+      try {
+        const { createClient: createSupabaseClient } = await import("@supabase/supabase-js")
+        const supabase = createSupabaseClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL!,
+          process.env.SUPABASE_SERVICE_ROLE_KEY!
+        )
+        await supabase
+          .from("analysis")
+          .update({
+            status: "failed",
+          })
+          .eq("id", payload.analysisId)
+      } catch (dbErr) {
+        console.error("[Local Mode] Failed to mark analysis as failed:", dbErr)
+      }
+    }
+  })()
   
   return { id: `local-${Date.now()}` }
 }

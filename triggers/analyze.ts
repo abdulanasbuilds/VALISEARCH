@@ -32,12 +32,14 @@ export const analyzeStartupIdea = task({
 
     let agentsCompleted = 0
 
-    const result = await runOrchestrator({
-      ideaText: payload.idea,
-      userId: payload.userId,
-      analysisId: payload.analysisId,
-      plan: payload.userPlan,
-      onAgentComplete: async (agentName: string, status: string) => {
+    const result = await runOrchestrator(
+      {
+        ideaText: payload.idea,
+        userId: payload.userId,
+        analysisId: payload.analysisId,
+        plan: payload.userPlan,
+      },
+      async (agentName, status) => {
         agentsCompleted++
         await metadata.set("agentsComplete", agentsCompleted)
         await metadata.set(`agent_${agentName}`, status)
@@ -50,8 +52,8 @@ export const analyzeStartupIdea = task({
             status,
             completed_at: new Date().toISOString(),
           })
-      },
-    })
+      }
+    )
 
     await supabase
       .from("analysis")

@@ -16,8 +16,9 @@ export type GeminiModel =
   | 'gemini-2.0-flash-lite'        // Lowest latency fallback
   | string;                        // Allow any future model name
 
-export interface GeminiChatOptions extends Omit<ChatOptions, 'model'> {
+export interface GeminiChatOptions extends Omit<Partial<ChatOptions>, 'model'> {
   model?: GeminiModel;
+  maxOutputTokens?: number;
 }
 
 export interface GeminiChatResponse extends ChatResponse {}
@@ -68,7 +69,7 @@ export class GeminiDirect {
   }
 
   private getCurrentKey(): string {
-    return this.apiKeys[this.currentKeyIndex];
+    return this.apiKeys[this.currentKeyIndex] ?? '';
   }
 
   private rotateKey() {
@@ -157,8 +158,9 @@ export class GeminiDirect {
         
         throw new Error('Invalid response format from Gemini API');
       } catch (error) {
-        if (error.message.includes('429') || error.message.includes('403') || 
-            error.message.includes('API key') || error.message.includes('quota')) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        if (errorMessage.includes('429') || errorMessage.includes('403') || 
+            errorMessage.includes('API key') || errorMessage.includes('quota')) {
           this.rotateKey();
           retries--;
           continue;

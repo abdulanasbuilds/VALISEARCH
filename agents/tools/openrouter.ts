@@ -85,7 +85,8 @@ export const GEMINI_DIRECT_ROUTING: Record<string, string> = {
 
 export function getModelForPlan(plan: string, isSynthesis = false): Model {
   if (isSynthesis) return "anthropic/claude-sonnet-4-6"
-  return MODEL_ROUTING[plan] ?? MODEL_ROUTING["free-tier"]
+  const model = MODEL_ROUTING[plan] ?? MODEL_ROUTING["free-tier"]
+  return model ?? "google/gemini-2.5-flash"
 }
 
 export function getGeminiDirectModel(agentName: string): string {
