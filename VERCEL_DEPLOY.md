@@ -137,7 +137,7 @@ Add these as **Secret** (not plain text):
 ```
 OPENROUTER_API_KEY=your-openrouter-key
 JINA_API_KEY=your-jina-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+SE_SERVICE_ROLE_KEY=your-service-role-key
 ```
 
 ### 4.3 Add Payment Gateway Secrets (Optional)
