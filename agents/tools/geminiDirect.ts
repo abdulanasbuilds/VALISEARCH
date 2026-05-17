@@ -83,13 +83,44 @@ export class GeminiDirect {
       throw new Error('No GEMINI_API_KEY_N environment variables configured');
     }
 
-    const promptString = Array.isArray(prompt) 
-      ? prompt.map(msg => `${msg.role}: ${msg.content}`).join('\n')
-      : prompt;
-
     const model = options.model ?? this.defaultModel;
     const temperature = options.temperature ?? this.temperature;
     const maxOutputTokens = options.maxOutputTokens ?? this.maxOutputTokens;
+
+    // Build the request body in accordance with Gemini API specifications
+    let requestBody: any;
+
+    if (Array.isArray(prompt)) {
+      const systemMsg = prompt.find(msg => msg.role === 'system');
+      const chatMsgs = prompt.filter(msg => msg.role !== 'system');
+      
+      const contents = chatMsgs.map(msg => ({
+        role: msg.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: msg.content }]
+      }));
+
+      requestBody = {
+        contents,
+        generationConfig: {
+          temperature,
+          maxOutputTokens,
+        }
+      };
+
+      if (systemMsg) {
+        requestBody.systemInstruction = {
+          parts: [{ text: systemMsg.content }]
+        };
+      }
+    } else {
+      requestBody = {
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: {
+          temperature,
+          maxOutputTokens,
+        }
+      };
+    }
 
     let retries = this.apiKeys.length;
     while (retries > 0) {
@@ -101,13 +132,7 @@ export class GeminiDirect {
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: promptString }] }],
-              generationConfig: {
-                temperature,
-                maxOutputTokens,
-              },
-            }),
+            body: JSON.stringify(requestBody),
           }
         );
 
