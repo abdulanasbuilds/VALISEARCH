@@ -198,7 +198,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { data: analysis } = await supabase
+    const { createClient: createSupabaseClient } = await import("@supabase/supabase-js")
+    const adminSupabase = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    )
+
+    const { data: analysis } = await adminSupabase
       .from("analysis")
       .insert({
         idea_id: savedIdea.id,
