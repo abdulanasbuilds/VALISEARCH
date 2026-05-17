@@ -47,11 +47,18 @@ export class GeminiDirect {
   }
 
   private collectKeys() {
+    const defaultKey = process.env.GEMINI_API_KEY;
+    if (defaultKey) {
+      this.apiKeys.push(defaultKey);
+    }
+
     let i = 1;
     while (true) {
       const key = process.env[`GEMINI_API_KEY_${i}`];
       if (!key) break;
-      this.apiKeys.push(key);
+      if (!this.apiKeys.includes(key)) {
+        this.apiKeys.push(key);
+      }
       i++;
     }
   }

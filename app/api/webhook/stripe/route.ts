@@ -120,9 +120,8 @@ export async function POST(req: NextRequest) {
 
       await supabase.from("credit_transactions").insert({
         user_id: userId,
-        type: "cancellation",
         amount: 0,
-        description: "Stripe subscription cancelled",
+        reason: "Stripe subscription cancelled",
       })
       break
     }
@@ -198,9 +197,8 @@ async function handleSubscription(
 
     await supabase.from("credit_transactions").insert({
       user_id: userId,
-      type: "purchase",
       amount: creditsToAdd,
-      description: `Stripe subscription activated (plan ${sub.planId})`,
+      reason: `Stripe subscription activated (plan ${sub.planId})`,
     })
   }
 }

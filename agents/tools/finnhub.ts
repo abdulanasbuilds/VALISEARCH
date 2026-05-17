@@ -41,8 +41,8 @@ export async function getCompanyNews(
 
   const data = await finnhubRequest("/company-news", {
     symbol,
-    from: from.toISOString().split("T")[0],
-    to: to.toISOString().split("T")[0],
+    from: from.toISOString().split("T")[0] ?? "",
+    to: to.toISOString().split("T")[0] ?? "",
   })
 
   const articles = data as Array<{
@@ -71,9 +71,9 @@ export async function getIPOCalendar(): Promise<Array<{
   price: number
 }>> {
   const data = await finnhubRequest("/calendar/ipo", {
-    from: new Date().toISOString().split("T")[0],
+    from: new Date().toISOString().split("T")[0] ?? "",
     to: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)
-      .toISOString().split("T")[0],
+      .toISOString().split("T")[0] ?? "",
   })
 
   const calendar = data as {
@@ -89,6 +89,6 @@ export async function getIPOCalendar(): Promise<Array<{
     name: ipo.name,
     date: ipo.date,
     shares: ipo.numberOfShares,
-    price: parseFloat(ipo.price.split("-")[0]),
+    price: parseFloat(ipo.price.split("-")[0] ?? "0"),
   }))
 }

@@ -67,14 +67,18 @@ export const analyzeStartupIdea = task({
 
     const creditsToDeduct = payload.analysisType === "quick" ? 1 : 2
 
+    const { data: creditsData } = await supabase
+      .from("credits")
+      .select("balance")
+      .eq("user_id", payload.userId)
+      .single()
+
+    const currentBalance = creditsData?.balance ?? 0
+    const newBalance = Math.max(0, currentBalance - creditsToDeduct)
+
     await supabase
       .from("credits")
-      .update({
-        balance: supabase.rpc("decrement_credits", {
-          user_id_input: payload.userId,
-          amount: creditsToDeduct,
-        }),
-      })
+      .update({ balance: newBalance })
       .eq("user_id", payload.userId)
 
     await supabase.from("credit_transactions").insert({

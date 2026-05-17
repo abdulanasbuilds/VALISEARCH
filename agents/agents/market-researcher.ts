@@ -95,17 +95,22 @@ async function runMarketResearcherInner(context: AgentContext): Promise<MarketRe
       return "Market data from search results"
     }
 
+    const getSourceUrl = (item: { url?: string; link?: string } | undefined): string => {
+      if (!item) return ""
+      return item.url ?? item.link ?? ""
+    }
+
     const tamResults = tamSearch.results.length > 0 ? tamSearch.results : serperResults.results
     const tam = tamResults[0]?.snippet
-      ? { value: parseMarketValue(tamResults[0].snippet), year: "2024", source: tamResults[0].url ?? tamResults[0].link ?? "", growth_rate: "See trends" }
+      ? { value: parseMarketValue(tamResults[0].snippet), year: "2024", source: getSourceUrl(tamResults[0]), growth_rate: "See trends" }
       : FALLBACK_OUTPUT.tam
 
     const sam = tamResults[1]?.snippet
-      ? { value: parseMarketValue(tamResults[1].snippet), year: "2024", source: tamResults[1].url ?? tamResults[1].link ?? "", growth_rate: "See trends" }
+      ? { value: parseMarketValue(tamResults[1].snippet), year: "2024", source: getSourceUrl(tamResults[1]), growth_rate: "See trends" }
       : FALLBACK_OUTPUT.sam
 
     const som = tamResults[2]?.snippet
-      ? { value: parseMarketValue(tamResults[2].snippet), year: "2024", source: tamResults[2].url ?? tamResults[2].link ?? "", growth_rate: "See trends" }
+      ? { value: parseMarketValue(tamResults[2].snippet), year: "2024", source: getSourceUrl(tamResults[2]), growth_rate: "See trends" }
       : FALLBACK_OUTPUT.som
 
     const marketTrends = [

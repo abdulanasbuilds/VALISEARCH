@@ -19,8 +19,8 @@ export interface AgentResult<T> {
   error?: string
 }
 
-// All 11 parallel agents (1-11)
-const AGENT_FUNCTIONS: Record<AgentName, (context: AgentContext) => Promise<unknown>> = {
+// All 12 agents (11 parallel + 1 synthesis)
+const AGENT_FUNCTIONS: Record<AgentName, (context: AgentContext, results?: FullAnalysisOutput) => Promise<unknown>> = {
   idea_validator: runIdeaValidator as (context: AgentContext) => Promise<unknown>,
   market_researcher: runMarketResearcher,
   competitor_intel: runCompetitorIntel,
@@ -32,7 +32,7 @@ const AGENT_FUNCTIONS: Record<AgentName, (context: AgentContext) => Promise<unkn
   content_creator: runContentCreator,
   brand_namer: runBrandNamer,
   scale_architect: runScaleArchitect,
-  synthesis: runSynthesis as (context: AgentContext, results: FullAnalysisOutput) => Promise<unknown>,
+  synthesis: runSynthesis as (context: AgentContext, results?: FullAnalysisOutput) => Promise<unknown>,
 }
 
 // Agent execution order
@@ -88,7 +88,7 @@ export async function runAnalysis(
     if (result.status === "fulfilled") {
       const { agentName, success, data } = result.value
       if (success && data) {
-        results[agentName as keyof FullAnalysisOutput] = data as FullAnalysisOutput[keyof FullAnalysisOutput]
+        (results as Record<string, unknown>)[agentName] = data
       }
     }
   }

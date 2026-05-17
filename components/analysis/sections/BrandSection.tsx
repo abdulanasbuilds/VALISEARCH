@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Palette } from "lucide-react"
 
 interface BrandSectionProps {
   brandName?: string

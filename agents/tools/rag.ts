@@ -1,4 +1,4 @@
-import type { AgentContext } from "./types"
+import type { AgentContext } from "../types"
 
 interface KnowledgeResult {
   id: string

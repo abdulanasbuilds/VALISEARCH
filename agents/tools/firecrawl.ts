@@ -19,7 +19,7 @@ export async function scrapeUrl(
       markdown: jinaResult.content,
       title: jinaResult.title,
       description: "",
-      success: jinaResult.success,
+      success: jinaResult.content.length > 0,
     }
   }
 
@@ -71,7 +71,7 @@ export async function scrapeUrl(
       markdown: jinaResult.content,
       title: jinaResult.title,
       description: "",
-      success: jinaResult.success,
+      success: jinaResult.content.length > 0,
     }
   }
 }

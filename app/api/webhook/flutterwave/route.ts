@@ -85,9 +85,8 @@ export async function POST(req: NextRequest) {
 
           await supabase.from("credit_transactions").insert({
             user_id: userId,
-            type: "purchase",
             amount: creditsToAdd,
-            description: `Flutterwave payment - ${data.tx_ref}`,
+            reason: `Flutterwave payment - ${data.tx_ref}`,
           })
 
           await supabase.from("subscriptions").upsert(
@@ -136,9 +135,8 @@ export async function POST(req: NextRequest) {
 
       await supabase.from("credit_transactions").insert({
         user_id: userId,
-        type: "cancellation",
         amount: 0,
-        description: "Flutterwave subscription cancelled",
+        reason: "Flutterwave subscription cancelled",
       })
       break
     }

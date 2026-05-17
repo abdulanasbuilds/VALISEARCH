@@ -32,12 +32,19 @@ export async function runOfferArchitect(context: AgentContext): Promise<OfferArc
 async function runOfferArchitectInner(context: AgentContext): Promise<OfferArchitectOutput> {
   const { ideaText, plan } = context
 
+  const tier0 = FALLBACK_OUTPUT.pricing_tiers[0]
+  const tier1 = FALLBACK_OUTPUT.pricing_tiers[1]
+
+  if (!tier0 || !tier1) {
+    return FALLBACK_OUTPUT
+  }
+
   const pricingBasedOnPlan = plan === "free"
     ? FALLBACK_OUTPUT.pricing_tiers
     : plan === "premium"
     ? [
-        { ...FALLBACK_OUTPUT.pricing_tiers[0], recommended: false },
-        { ...FALLBACK_OUTPUT.pricing_tiers[1], price: "$29", recommended: false },
+        { ...tier0, recommended: false },
+        { ...tier1, price: "$29", recommended: false },
         { name: "Premium", price: "$79", billing_period: "month", features: ["Unlimited credits", "Deep analysis", "API access"], target_user: "Teams & agencies", recommended: true },
       ]
     : FALLBACK_OUTPUT.pricing_tiers

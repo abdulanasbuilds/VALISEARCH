@@ -12,7 +12,6 @@ async function getClient(): Promise<{ createRun: Function; updateRun: Function }
       const { Client } = await import("langsmith")
       langsmithClient = new Client({
         apiKey: process.env.LANGCHAIN_API_KEY,
-        projectName: process.env.LANGCHAIN_PROJECT ?? "valisearch",
       })
     } catch {
       return null

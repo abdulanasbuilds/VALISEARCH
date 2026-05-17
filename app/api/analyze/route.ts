@@ -41,6 +41,15 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    const { checkRateLimit } = await import("@/lib/rate-limit")
+    const { success } = await checkRateLimit(`analyze:${user.id}`, 20, 3600)
+    if (!success) {
+      return NextResponse.json(
+        { error: "Too many analysis requests. Please try again in an hour." },
+        { status: 429 }
+      )
+    }
+
     const { idea, analysisType = "full" } =
       await request.json() as {
         idea: string

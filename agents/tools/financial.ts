@@ -57,17 +57,22 @@ export async function getStockQuote(
   })
 
   const quote = data["Global Quote"] as Record<string, string> | undefined
-  if (!quote || !quote["05. price"]) return null
+  if (!quote) return null
+
+  const priceStr = quote["05. price"]
+  const changeStr = quote["09. change"]
+  const changePercentStr = quote["10. change percent"]
+  const volumeStr = quote["06. volume"]
+
+  if (!priceStr || !changeStr || !changePercentStr || !volumeStr) return null
 
   return {
     symbol,
-    price: parseFloat(quote["05. price"]),
+    price: parseFloat(priceStr),
     marketCap: null,
-    change: parseFloat(quote["09. change"]),
-    changePercent: parseFloat(
-      quote["10. change percent"].replace("%", "")
-    ),
-    volume: parseInt(quote["06. volume"]),
+    change: parseFloat(changeStr),
+    changePercent: parseFloat(changePercentStr.replace("%", "")),
+    volume: parseInt(volumeStr),
   }
 }
 

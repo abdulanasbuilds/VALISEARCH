@@ -29,7 +29,7 @@ export async function googleSearch(
       results: jinaResult.results.map((r, i) => ({
         title: r.title,
         link: r.url,
-        snippet: r.content.slice(0, 200),
+        snippet: r.snippet.slice(0, 200),
         position: i + 1,
       })),
       relatedSearches: [],
@@ -87,8 +87,24 @@ export async function googleSearch(
       ),
     }
   } catch (error) {
-    console.error(`[Serper] Failed for "${query}":`, error)
-    return { query, results: [], relatedSearches: [] }
+    console.error(`[Serper] Failed for "${query}", trying Jina fallback:`, error)
+    try {
+      const { searchWeb } = await import("./jina")
+      const jinaResult = await searchWeb(query)
+      return {
+        query,
+        results: jinaResult.results.map((r, i) => ({
+          title: r.title,
+          link: r.url,
+          snippet: r.snippet.slice(0, 200),
+          position: i + 1,
+        })),
+        relatedSearches: [],
+      }
+    } catch (jinaError) {
+      console.error("[Serper Fallback Jina] Failed:", jinaError)
+      return { query, results: [], relatedSearches: [] }
+    }
   }
 }
 

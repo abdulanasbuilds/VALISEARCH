@@ -22,6 +22,24 @@ export function AnalysisProgress({ analysisId }: AnalysisProgressProps) {
   const [progress, setProgress] = useState<any[]>([])
 
   useEffect(() => {
+    async function fetchAnalysis() {
+      const { data } = await supabase
+        .from("analysis")
+        .select("*")
+        .eq("id", analysisId)
+        .single()
+      setAnalysis(data)
+    }
+
+    async function fetchProgress() {
+      const { data } = await supabase
+        .from("analysis_progress")
+        .select("*")
+        .eq("analysis_id", analysisId)
+        .order("agent_name")
+      setProgress(data || [])
+    }
+
     // Subscribe to realtime updates
     const channel = supabase
       .channel(`analysis-${analysisId}`)
@@ -59,25 +77,7 @@ export function AnalysisProgress({ analysisId }: AnalysisProgressProps) {
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [analysisId])
-
-  async function fetchAnalysis() {
-    const { data } = await supabase
-      .from("analysis")
-      .select("*")
-      .eq("id", analysisId)
-      .single()
-    setAnalysis(data)
-  }
-
-  async function fetchProgress() {
-    const { data } = await supabase
-      .from("analysis_progress")
-      .select("*")
-      .eq("analysis_id", analysisId)
-      .order("agent_name")
-    setProgress(data || [])
-  }
+  }, [analysisId, supabase])
 
   if (!analysis) {
     return (

@@ -1,7 +1,6 @@
 "use client"
 
 import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { formatRelativeTime, truncate } from "@/lib/utils"
 import { Clock, TerminalSquare, Activity } from "lucide-react"
 

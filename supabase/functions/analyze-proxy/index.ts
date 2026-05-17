@@ -308,9 +308,12 @@ Deno.serve(async (req) => {
 
     // Collect Gemini Direct API keys for rotation
     const geminiKeys: string[] = []
-    for (let i = 1; i <= 10; i++) {
+    const defaultKey = Deno.env.get("GEMINI_API_KEY")
+    if (defaultKey) geminiKeys.push(defaultKey)
+
+    for (let i = 1; i <= 20; i++) {
       const key = Deno.env.get(`GEMINI_API_KEY_${i}`)
-      if (key) geminiKeys.push(key)
+      if (key && !geminiKeys.includes(key)) geminiKeys.push(key)
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey)

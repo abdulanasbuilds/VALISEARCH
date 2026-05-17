@@ -93,9 +93,8 @@ export async function POST(req: NextRequest) {
 
           await supabase.from("credit_transactions").insert({
             user_id: userId,
-            type: "purchase",
             amount: creditsToAdd,
-            description: `Paystack payment - ${data.reference}`,
+            reason: `Paystack payment - ${data.reference}`,
           })
 
           await supabase.from("subscriptions").upsert(
@@ -144,9 +143,8 @@ export async function POST(req: NextRequest) {
 
       await supabase.from("credit_transactions").insert({
         user_id: userId,
-        type: "cancellation",
         amount: 0,
-        description: "Paystack subscription cancelled",
+        reason: "Paystack subscription cancelled",
       })
       break
     }

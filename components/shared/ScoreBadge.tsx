@@ -7,7 +7,7 @@ interface ScoreBadgeProps {
 
 export function ScoreBadge({ score }: ScoreBadgeProps) {
   let colorClass = "bg-gray-500"
-  let textClass = "text-white"
+  const textClass = "text-white"
 
   if (score >= SCORE_THRESHOLDS.good) {
     colorClass = "bg-green-500"

@@ -1,6 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Lightbulb, AlertTriangle, ArrowRight } from "lucide-react"
+import { Lightbulb, AlertTriangle } from "lucide-react"
 
 interface SynthesisSectionProps {
   executiveSummary: string

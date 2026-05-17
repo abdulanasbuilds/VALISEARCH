@@ -8,7 +8,6 @@ import {
   Activity,
   Settings,
   Database,
-  FolderOpen,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 

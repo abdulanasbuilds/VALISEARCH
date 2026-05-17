@@ -88,7 +88,7 @@ export function AuthGateModal({ open, onOpenChange }: AuthGateModalProps) {
         <CardHeader className="space-y-1">
           <CardTitle className="text-2xl font-bold">Sign in to continue</CardTitle>
           <CardDescription>
-            Enter your idea above and we'll analyze it once you sign in
+            Enter your idea above and we&apos;ll analyze it once you sign in
           </CardDescription>
         </CardHeader>
         

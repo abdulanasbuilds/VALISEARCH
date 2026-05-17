@@ -75,13 +75,13 @@ async function runProductManagerInner(context: AgentContext): Promise<ProductMan
     ]
 
     const tasks: ProductManagerOutput["kanban_tasks"] = [
-      { title: "Initialize Next.js project with TypeScript", column: "todo", priority: "high", estimated_hours: 4 },
-      { title: "Set up Supabase auth and database", column: "todo", priority: "high", estimated_hours: 8 },
-      { title: "Create landing page and auth forms", column: "todo", priority: "high", estimated_hours: 16 },
-      { title: "Build idea input form", column: "in-progress", priority: "high", estimated_hours: 8 },
-      { title: "Implement analysis trigger system", column: "todo", priority: "high", estimated_hours: 16 },
-      { title: "Create results dashboard UI", column: "todo", priority: "high", estimated_hours: 24 },
-      { title: "Add credit system and billing UI", column: "backlog", priority: "medium", estimated_hours: 16 },
+      { title: "Initialize Next.js project with TypeScript", description: "Set up repositories, dev server, and package configurations", column: "todo", priority: "high", estimated_hours: 4 },
+      { title: "Set up Supabase auth and database", description: "Configure auth tables, clients, and middleware", column: "todo", priority: "high", estimated_hours: 8 },
+      { title: "Create landing page and auth forms", description: "Design Hero, Features, Pricing sections, and Login/Register components", column: "todo", priority: "high", estimated_hours: 16 },
+      { title: "Build idea input form", description: "Implement textarea and onboarding validation rules", column: "in-progress", priority: "high", estimated_hours: 8 },
+      { title: "Implement analysis trigger system", description: "Set up API route or Trigger.dev handler for parallel orchestration", column: "todo", priority: "high", estimated_hours: 16 },
+      { title: "Create results dashboard UI", description: "Design tabs, scorecards, and charts for reports", column: "todo", priority: "high", estimated_hours: 24 },
+      { title: "Add credit system and billing UI", description: "Integrate Stripe or Lemon Squeezy checkout redirects and webhooks", column: "backlog", priority: "medium", estimated_hours: 16 },
     ]
 
     return {

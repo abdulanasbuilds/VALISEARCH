@@ -44,7 +44,7 @@ export function LoginForm() {
       }
 
       toast.success("Welcome back!")
-      window.location.href = "/workspace"
+      window.location.assign("/workspace")
     } catch {
       toast.error("Something went wrong. Please try again.")
     } finally {
@@ -52,8 +52,13 @@ export function LoginForm() {
     }
   }
 
+  const onFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    handleSubmit(onSubmit)(e)
+  }
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <form onSubmit={onFormSubmit} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <Input
