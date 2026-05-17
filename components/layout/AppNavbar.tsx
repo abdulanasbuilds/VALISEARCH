@@ -72,10 +72,8 @@ export function AppNavbar() {
           </Badge>
 
           <DropdownMenu>
-            <DropdownMenuTrigger>
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <User className="h-5 w-5" />
-              </Button>
+            <DropdownMenuTrigger render={<Button variant="ghost" size="icon" className="rounded-full" />}>
+              <User className="h-5 w-5" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
               <div className="flex items-center gap-2 p-2">
