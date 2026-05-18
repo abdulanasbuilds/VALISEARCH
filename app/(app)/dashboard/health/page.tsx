@@ -84,7 +84,7 @@ export default function HealthPage() {
     ])
 
     const taskCompletion = tasks.data?.length 
-      ? Math.round((tasks.data.filter(t => t.status === "done").length / tasks.data.length) * 100) 
+      ? Math.round((tasks.data.filter((t: any) => t.status === "done").length / tasks.data.length) * 100) 
       : 0
 
     const validation_strength = Math.min(100, 40 + taskCompletion * 0.6)

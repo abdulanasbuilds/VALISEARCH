@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
+import { wrapResilientClient } from "./resilient"
 
 export async function createClient() {
   const cookieStore = await cookies()
@@ -10,7 +11,7 @@ export async function createClient() {
   const url = supabaseUrl ?? "https://placeholder.supabase.co"
   const key = supabaseKey ?? "placeholder"
 
-  return createServerClient(
+  const client = createServerClient(
     url,
     key,
     {
@@ -32,4 +33,7 @@ export async function createClient() {
       },
     }
   )
+  
+  return wrapResilientClient(client)
 }
+

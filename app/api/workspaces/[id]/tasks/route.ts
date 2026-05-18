@@ -32,9 +32,9 @@ export async function GET(req: NextRequest, { params }: Props) {
     }
 
     const kanban = {
-      todo: tasks?.filter((t) => t.status === "todo") || [],
-      in_progress: tasks?.filter((t) => t.status === "in_progress") || [],
-      done: tasks?.filter((t) => t.status === "done") || [],
+      todo: tasks?.filter((t: any) => t.status === "todo") || [],
+      in_progress: tasks?.filter((t: any) => t.status === "in_progress") || [],
+      done: tasks?.filter((t: any) => t.status === "done") || [],
     }
 
     return NextResponse.json({ kanban })

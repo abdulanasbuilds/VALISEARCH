@@ -1,4 +1,5 @@
 import { createBrowserClient } from "@supabase/ssr"
+import { wrapResilientClient } from "./resilient"
 
 export function createClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -8,5 +9,7 @@ export function createClient() {
   const url = supabaseUrl ?? "https://placeholder.supabase.co"
   const key = supabaseKey ?? "placeholder"
 
-  return createBrowserClient(url, key)
+  const client = createBrowserClient(url, key)
+  return wrapResilientClient(client)
 }
+

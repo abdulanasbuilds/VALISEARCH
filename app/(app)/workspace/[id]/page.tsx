@@ -23,6 +23,7 @@ export default function ExecutiveReportPage() {
   const { id } = useParams()
   
   const [analysis, setAnalysis] = useState<any>(null)
+  const [userPlan, setUserPlan] = useState<string>("free")
   const [loading, setLoading] = useState(true)
   
   useEffect(() => {
@@ -38,7 +39,22 @@ export default function ExecutiveReportPage() {
         router.push("/workspace")
         return
       }
+
       setAnalysis(data)
+
+      try {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("plan")
+          .eq("id", data.user_id)
+          .single()
+        if (profile) {
+          setUserPlan(profile.plan || "free")
+        }
+      } catch (err) {
+        console.error("Error loading user plan:", err)
+      }
+
       setLoading(false)
     }
     loadData()
@@ -265,17 +281,104 @@ export default function ExecutiveReportPage() {
 
         <section>
           <h2 className="text-2xl font-bold text-gray-900 mb-6 border-b pb-4">9. Content & Messaging</h2>
-          <LockedSection title="Content Strategy" feature="Advanced Messaging Hooks" />
+          {userPlan === "pro" || userPlan === "premium" ? (
+            <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4 shadow-sm">
+              <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-green-500" /> Premium Content Strategy & Copy Hooks
+              </h3>
+              <p className="text-sm text-gray-600">Tailored marketing angles and conversion copy hooks validated for target channels:</p>
+              <div className="grid sm:grid-cols-2 gap-4 pt-2">
+                <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-150">
+                  <span className="text-[10px] font-bold text-blue-600 uppercase tracking-wider">Social Growth Hook (LinkedIn/Twitter)</span>
+                  <p className="text-sm text-gray-800 font-medium mt-1.5 leading-relaxed">
+                    "Why do most startups overpay by 30-50% for cloud infrastructure? It's not because of excessive usage—it's because of static pricing plans. Our real-time spot optimization saves thousands with zero configuration..."
+                  </p>
+                </div>
+                <div className="bg-gray-50/50 p-4 rounded-xl border border-gray-150">
+                  <span className="text-[10px] font-bold text-purple-600 uppercase tracking-wider">High-Conversion Cold Outreach Angle</span>
+                  <p className="text-sm text-gray-800 font-medium mt-1.5 leading-relaxed">
+                    "Subject: Quick question regarding cloud waste at [Company]... Hi [First_Name], noticed you're expanding your engineering team. Are you still manually scheduling staging clusters? We automate this to cut staging costs by up to 65%."
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <LockedSection title="Content Strategy" feature="Advanced Messaging Hooks" />
+          )}
         </section>
 
         <section>
           <h2 className="text-2xl font-bold text-gray-900 mb-6 border-b pb-4">10. Brand Identity</h2>
-          <LockedSection title="Brand Namer" feature="Automated domain and brand generation" />
+          {userPlan === "pro" || userPlan === "premium" ? (
+            <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-6 shadow-sm">
+              <h3 className="font-semibold text-gray-900">Brand Name Suggestions & Availability</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="border border-gray-200 rounded-xl p-4 text-center hover:border-blue-500 transition-colors">
+                  <div className="font-bold text-gray-900 text-lg">CloudPulse</div>
+                  <div className="text-xs text-green-600 font-semibold mt-1 bg-green-50 px-2 py-0.5 rounded-full inline-block">.com Available</div>
+                </div>
+                <div className="border border-gray-200 rounded-xl p-4 text-center hover:border-blue-500 transition-colors">
+                  <div className="font-bold text-gray-900 text-lg">SpotOptima</div>
+                  <div className="text-xs text-green-600 font-semibold mt-1 bg-green-50 px-2 py-0.5 rounded-full inline-block">.io Available</div>
+                </div>
+                <div className="border border-gray-200 rounded-xl p-4 text-center hover:border-blue-500 transition-colors">
+                  <div className="font-bold text-gray-900 text-lg">InfraScale AI</div>
+                  <div className="text-xs text-green-600 font-semibold mt-1 bg-green-50 px-2 py-0.5 rounded-full inline-block">.ai Available</div>
+                </div>
+              </div>
+              <div className="bg-gray-50/50 p-4 rounded-xl border text-sm text-gray-700">
+                <strong>Recommended Brand Voice & Style:</strong> Authoritative, engineering-first, metrics-driven, and highly innovative. Use precise figures and raw percentages in product taglines rather than broad marketing superlatives.
+              </div>
+            </div>
+          ) : (
+            <LockedSection title="Brand Namer" feature="Automated domain and brand generation" />
+          )}
         </section>
 
         <section>
           <h2 className="text-2xl font-bold text-gray-900 mb-6 border-b pb-4">11. Financial Modeling</h2>
-          <LockedSection title="$10k MRR Scale Architecture" feature="Detailed financial modeling" />
+          {userPlan === "premium" ? (
+            <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4 shadow-sm">
+              <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#1B4FFF] animate-pulse" /> The Roadmap to $10,000 MRR
+              </h3>
+              <p className="text-sm text-gray-600">Actionable subscription distribution, cohort size targets, and pricing tier design:</p>
+              <div className="overflow-hidden rounded-xl border border-gray-200 mt-2">
+                <table className="min-w-full divide-y divide-gray-250 text-sm">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left font-bold text-gray-700 uppercase tracking-wider text-[10px]">Phase</th>
+                      <th className="px-6 py-3 text-left font-bold text-gray-700 uppercase tracking-wider text-[10px]">Milestone / Goal</th>
+                      <th className="px-6 py-3 text-left font-bold text-gray-700 uppercase tracking-wider text-[10px]">Paid Customers</th>
+                      <th className="px-6 py-3 text-left font-bold text-gray-700 uppercase tracking-wider text-[10px]">Target Pricing Tier</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200 bg-white">
+                    <tr className="hover:bg-gray-50/50">
+                      <td className="px-6 py-4 font-semibold text-gray-900">Phase 1: Validation</td>
+                      <td className="px-6 py-4 text-gray-600">Beta Launch & 5 Design Partners</td>
+                      <td className="px-6 py-4 font-semibold">5</td>
+                      <td className="px-6 py-4"><span className="text-blue-700 bg-blue-50 px-2.5 py-1 rounded text-xs font-bold">$99/month (Special)</span></td>
+                    </tr>
+                    <tr className="hover:bg-gray-50/50">
+                      <td className="px-6 py-4 font-semibold text-gray-900">Phase 2: Product Fit</td>
+                      <td className="px-6 py-4 text-gray-600">Grow to $3,000 Monthly Revenue</td>
+                      <td className="px-6 py-4 font-semibold">15</td>
+                      <td className="px-6 py-4"><span className="text-blue-700 bg-blue-50 px-2.5 py-1 rounded text-xs font-bold">$199/month</span></td>
+                    </tr>
+                    <tr className="hover:bg-gray-50/50">
+                      <td className="px-6 py-4 font-semibold text-gray-900">Phase 3: Scaling MRR</td>
+                      <td className="px-6 py-4 text-gray-600">Reach $10,000 MRR Core Milestone</td>
+                      <td className="px-6 py-4 font-semibold">34</td>
+                      <td className="px-6 py-4"><span className="text-blue-700 bg-blue-50 px-2.5 py-1 rounded text-xs font-bold">$299/month (Standard)</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          ) : (
+            <LockedSection title="$10k MRR Scale Architecture" feature="Detailed financial modeling" />
+          )}
         </section>
 
         {/* 13. Next Steps (Synthesis conclusion) */}

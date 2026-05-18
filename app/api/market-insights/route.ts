@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 
-  const categories = [...new Set(insights?.map((i) => i.category) || [])]
+  const categories = [...new Set(insights?.map((i: any) => i.category) || [])]
 
   return NextResponse.json({ 
     insights: insights || [],

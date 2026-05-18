@@ -51,7 +51,7 @@ export function AnalysisProgress({ analysisId }: AnalysisProgressProps) {
           table: "analysis",
           filter: `id=eq.${analysisId}`,
         },
-        (payload) => {
+        (payload: any) => {
           setAnalysis(payload.new)
         }
       )
@@ -63,7 +63,7 @@ export function AnalysisProgress({ analysisId }: AnalysisProgressProps) {
           table: "analysis_progress",
           filter: `analysis_id=eq.${analysisId}`,
         },
-        (payload) => {
+        (payload: any) => {
           // Refresh progress
           fetchProgress()
         }

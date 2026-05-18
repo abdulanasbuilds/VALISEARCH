@@ -72,7 +72,7 @@ export default function NewAnalysisPage() {
     fetchAnalysis()
 
     const channel = supabase.channel(`analysis:${analysisId}`)
-      .on('broadcast', { event: 'agent_status' }, (payload) => {
+      .on('broadcast', { event: 'agent_status' }, (payload: { payload: any }) => {
         const { agentId, status, message } = payload.payload
         setAgents(prev => prev.map(a => a.id === agentId ? { ...a, status } : a))
         if (message) addLog(`[${agents.find(a => a.id === agentId)?.name}] ${message}`)
