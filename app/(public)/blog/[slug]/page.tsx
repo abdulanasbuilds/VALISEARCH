@@ -81,7 +81,7 @@ export default function BlogPostPage({ params }: Props) {
         {/* Back Button */}
         <div className="mb-12">
           <Link href="/blog">
-            <Button variant="ghost" className="h-10 px-4 border border-subtle hover:bg-muted rounded-lg group text-xs font-mono uppercase tracking-wider">
+            <Button variant="ghost" className="h-10 px-4 border border-border hover:bg-muted rounded-lg group text-xs font-mono uppercase tracking-wider">
               <ArrowLeft className="mr-2 h-4 w-4 group-hover:-translate-x-1 transition-transform" />
               Back to Library
             </Button>
@@ -93,7 +93,7 @@ export default function BlogPostPage({ params }: Props) {
           
           {/* Main Article Workspace: Left 8 Columns */}
           <article className="lg:col-span-8">
-            <header className="mb-12 border-b border-subtle pb-8">
+            <header className="mb-12 border-b border-border pb-8">
               <div className="flex flex-wrap items-center gap-4 mb-6">
                 <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary rounded py-1 px-3 uppercase text-[10px] font-mono tracking-widest">
                   {post.category}
@@ -113,7 +113,7 @@ export default function BlogPostPage({ params }: Props) {
               </h1>
 
               {/* Author and Social Shares */}
-              <div className="flex items-center justify-between py-4 border-t border-subtle">
+              <div className="flex items-center justify-between py-4 border-t border-border">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-foreground text-background flex items-center justify-center font-bold text-sm shadow-sm">
                     {post.author.avatarText}
@@ -129,11 +129,11 @@ export default function BlogPostPage({ params }: Props) {
                     variant="ghost" 
                     size="icon" 
                     onClick={copyToClipboard}
-                    className="h-9 w-9 rounded-lg border border-subtle"
+                    className="h-9 w-9 rounded-lg border border-border"
                   >
                     {copied ? <CheckCircle2 className="h-4 w-4 text-green-500" /> : <Share2 className="h-4 w-4" />}
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg border border-subtle">
+                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg border border-border">
                     <Bookmark className="h-4 w-4" />
                   </Button>
                 </div>
@@ -162,7 +162,7 @@ export default function BlogPostPage({ params }: Props) {
                       <h2 
                         id={elementId}
                         key={idx} 
-                        className="text-2xl md:text-3xl font-bold tracking-tight text-foreground mt-12 mb-4 pt-4 border-b border-subtle pb-2"
+                        className="text-2xl md:text-3xl font-bold tracking-tight text-foreground mt-12 mb-4 pt-4 border-b border-border pb-2"
                       >
                         {block.text}
                       </h2>
@@ -233,8 +233,8 @@ export default function BlogPostPage({ params }: Props) {
           <aside className="lg:col-span-4 sticky top-28 space-y-8 hidden lg:block">
             
             {/* Table of Contents Widget */}
-            <div className="border border-subtle rounded-2xl p-6 bg-muted/10 shadow-sm">
-              <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest block mb-4 border-b border-subtle pb-2">
+            <div className="border border-border rounded-2xl p-6 bg-muted/10 shadow-sm">
+              <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest block mb-4 border-b border-border pb-2">
                 Table of Contents
               </span>
               <ul className="space-y-3">
@@ -249,7 +249,7 @@ export default function BlogPostPage({ params }: Props) {
                         className={`text-xs font-semibold block transition-colors leading-normal ${
                           isCurrent 
                             ? "text-primary pl-2 border-l-2 border-primary" 
-                            : "text-muted-foreground hover:text-foreground pl-2 border-l border-subtle"
+                            : "text-muted-foreground hover:text-foreground pl-2 border-l border-border"
                         }`}
                       >
                         {heading}
@@ -286,7 +286,7 @@ export default function BlogPostPage({ params }: Props) {
         </div>
 
         {/* Bottom Next Up Recommendation Section */}
-        <section className="mt-32 pt-16 border-t border-subtle">
+        <section className="mt-32 pt-16 border-t border-border">
           <div className="mb-12 flex items-center justify-between">
             <h3 className="text-2xl font-bold tracking-tight text-foreground">
               Next Up.
@@ -300,7 +300,7 @@ export default function BlogPostPage({ params }: Props) {
             {nextUpPosts.map((post) => (
               <div 
                 key={post.slug}
-                className="surface-card p-6 rounded-2xl border border-subtle hover:border-primary/50 transition-colors flex flex-col justify-between"
+                className="surface-card p-6 rounded-2xl border border-border hover:border-primary/50 transition-colors flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
@@ -315,7 +315,7 @@ export default function BlogPostPage({ params }: Props) {
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-subtle flex justify-end">
+                <div className="mt-6 pt-4 border-t border-border flex justify-end">
                   <Link href={`/blog/${post.slug}`} className="text-xs font-bold flex items-center gap-1 hover:text-primary transition-colors">
                     Read Article
                     <ArrowRight className="h-3 w-3" />

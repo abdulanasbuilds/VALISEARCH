@@ -267,7 +267,7 @@ export default function KanbanBoardPage({ params }: Props) {
                 placeholder="e.g. Set up payment sandbox checkout"
                 value={newTaskTitle}
                 onChange={(e) => setNewTaskTitle(e.target.value)}
-                className="w-full h-10 px-3 rounded-lg border border-subtle bg-background text-xs focus:outline-none focus:border-primary"
+                className="w-full h-10 px-3 rounded-lg border border-border bg-background text-xs focus:outline-none focus:border-primary"
               />
             </div>
 
@@ -278,7 +278,7 @@ export default function KanbanBoardPage({ params }: Props) {
                 placeholder="Detail task requirements..."
                 value={newTaskDesc}
                 onChange={(e) => setNewTaskDesc(e.target.value)}
-                className="w-full p-3 rounded-lg border border-subtle bg-background text-xs focus:outline-none focus:border-primary resize-none"
+                className="w-full p-3 rounded-lg border border-border bg-background text-xs focus:outline-none focus:border-primary resize-none"
               />
             </div>
 
@@ -288,7 +288,7 @@ export default function KanbanBoardPage({ params }: Props) {
                 <select
                   value={newTaskPriority}
                   onChange={(e) => setNewTaskPriority(e.target.value as any)}
-                  className="w-full h-10 px-2 rounded-lg border border-subtle bg-background text-xs focus:outline-none"
+                  className="w-full h-10 px-2 rounded-lg border border-border bg-background text-xs focus:outline-none"
                 >
                   <option value="high">High</option>
                   <option value="medium">Medium</option>
@@ -301,7 +301,7 @@ export default function KanbanBoardPage({ params }: Props) {
                 <select
                   value={newTaskCategory}
                   onChange={(e) => setNewTaskCategory(e.target.value)}
-                  className="w-full h-10 px-2 rounded-lg border border-subtle bg-background text-xs focus:outline-none"
+                  className="w-full h-10 px-2 rounded-lg border border-border bg-background text-xs focus:outline-none"
                 >
                   <option value="product">Product</option>
                   <option value="market">Market</option>

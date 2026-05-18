@@ -72,7 +72,7 @@ export default function WorkspaceSettingsPage({ params }: Props) {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full h-10 px-3 rounded-lg border border-subtle bg-background text-xs focus:outline-none focus:border-primary"
+                className="w-full h-10 px-3 rounded-lg border border-border bg-background text-xs focus:outline-none focus:border-primary"
               />
             </div>
 
@@ -83,7 +83,7 @@ export default function WorkspaceSettingsPage({ params }: Props) {
                 type="text"
                 value={industry}
                 onChange={(e) => setIndustry(e.target.value)}
-                className="w-full h-10 px-3 rounded-lg border border-subtle bg-background text-xs focus:outline-none focus:border-primary"
+                className="w-full h-10 px-3 rounded-lg border border-border bg-background text-xs focus:outline-none focus:border-primary"
               />
             </div>
 

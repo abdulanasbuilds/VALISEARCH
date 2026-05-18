@@ -213,7 +213,7 @@ export default function CompetitorIntelligencePage({ params }: Props) {
           <div className="bg-background border border-border/60 rounded-2xl w-full max-w-xl shadow-2xl p-6 relative">
             <button 
               onClick={() => setSelectedCompetitor(null)}
-              className="absolute top-4 right-4 h-8 w-8 rounded-full border border-subtle flex items-center justify-center hover:bg-muted"
+              className="absolute top-4 right-4 h-8 w-8 rounded-full border border-border flex items-center justify-center hover:bg-muted"
             >
               <X className="h-4 w-4 text-muted-foreground" />
             </button>

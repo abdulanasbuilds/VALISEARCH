@@ -268,7 +268,7 @@ export default function CoFounderChatPage({ params }: Props) {
           placeholder="Ask your co-founder about pricing loop strategies, direct competitor gaps..."
           value={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
-          className="flex-1 h-11 px-4 text-xs rounded-xl border border-subtle bg-background text-foreground focus:outline-none focus:border-primary disabled:opacity-50"
+          className="flex-1 h-11 px-4 text-xs rounded-xl border border-border bg-background text-foreground focus:outline-none focus:border-primary disabled:opacity-50"
         />
         
         <Button type="submit" disabled={aiTyping} className="h-11 px-5 rounded-xl font-semibold flex items-center gap-1.5 shrink-0 bg-primary hover:bg-primary/95 text-white">
