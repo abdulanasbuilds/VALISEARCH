@@ -11,9 +11,9 @@ import { Clock, ArrowRight, Sparkles, Send, CheckCircle2 } from "lucide-react"
 // Custom premium SVG mockups to represent real product graphics
 function AgentArchitectureVisual() {
   return (
-    <div className="w-full h-full min-h-[260px] bg-slate-950 rounded-xl border border-subtle p-5 relative overflow-hidden flex flex-col justify-between shadow-lg">
+    <div className="w-full h-full min-h-[260px] bg-slate-950 rounded-xl border border-border p-5 relative overflow-hidden flex flex-col justify-between shadow-lg">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:20px_20px]" />
-      <div className="flex items-center justify-between border-b border-subtle pb-3 relative z-10">
+      <div className="flex items-center justify-between border-b border-border pb-3 relative z-10">
         <div className="flex items-center gap-2">
           <div className="h-3 w-3 rounded-full bg-red-500/80" />
           <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
@@ -25,15 +25,15 @@ function AgentArchitectureVisual() {
       <div className="my-6 flex justify-around items-center relative z-10">
         {/* Parallel Agent Nodes */}
         <div className="flex flex-col gap-2">
-          <div className="px-3 py-1.5 rounded bg-muted border border-subtle text-[10px] font-mono text-foreground shadow-sm flex items-center gap-1.5">
+          <div className="px-3 py-1.5 rounded bg-muted border border-border text-[10px] font-mono text-foreground shadow-sm flex items-center gap-1.5">
             <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
             Validator
           </div>
-          <div className="px-3 py-1.5 rounded bg-muted border border-subtle text-[10px] font-mono text-foreground shadow-sm flex items-center gap-1.5">
+          <div className="px-3 py-1.5 rounded bg-muted border border-border text-[10px] font-mono text-foreground shadow-sm flex items-center gap-1.5">
             <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
             Competitors
           </div>
-          <div className="px-3 py-1.5 rounded bg-muted border border-subtle text-[10px] font-mono text-foreground shadow-sm flex items-center gap-1.5">
+          <div className="px-3 py-1.5 rounded bg-muted border border-border text-[10px] font-mono text-foreground shadow-sm flex items-center gap-1.5">
             <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
             Social Search
           </div>
@@ -52,7 +52,7 @@ function AgentArchitectureVisual() {
         </div>
       </div>
 
-      <div className="flex justify-between items-center text-[10px] font-mono text-muted-foreground border-t border-subtle pt-3 relative z-10">
+      <div className="flex justify-between items-center text-[10px] font-mono text-muted-foreground border-t border-border pt-3 relative z-10">
         <span>Active Runs: 12 Parallel Agents</span>
         <span>Runtime: 88.4s</span>
       </div>
@@ -62,9 +62,9 @@ function AgentArchitectureVisual() {
 
 function ValidationTrapVisual() {
   return (
-    <div className="w-full h-full min-h-[200px] bg-slate-950 rounded-xl border border-subtle p-5 relative overflow-hidden flex flex-col justify-between shadow-lg">
+    <div className="w-full h-full min-h-[200px] bg-slate-950 rounded-xl border border-border p-5 relative overflow-hidden flex flex-col justify-between shadow-lg">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:20px_20px]" />
-      <div className="flex items-center justify-between border-b border-subtle pb-3 relative z-10">
+      <div className="flex items-center justify-between border-b border-border pb-3 relative z-10">
         <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">Riskiest Assumption Audit</span>
       </div>
 
@@ -90,7 +90,7 @@ function ValidationTrapVisual() {
         </div>
       </div>
 
-      <span className="text-[10px] font-mono text-center text-muted-foreground block border-t border-subtle pt-3 relative z-10">
+      <span className="text-[10px] font-mono text-center text-muted-foreground block border-t border-border pt-3 relative z-10">
         Build less. Test core assumptions first.
       </span>
     </div>
@@ -99,23 +99,23 @@ function ValidationTrapVisual() {
 
 function SoloFounderVisual() {
   return (
-    <div className="w-full h-full min-h-[200px] bg-slate-950 rounded-xl border border-subtle p-5 relative overflow-hidden flex flex-col justify-between shadow-lg">
+    <div className="w-full h-full min-h-[200px] bg-slate-950 rounded-xl border border-border p-5 relative overflow-hidden flex flex-col justify-between shadow-lg">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:20px_20px]" />
-      <div className="flex items-center justify-between border-b border-subtle pb-3 relative z-10">
+      <div className="flex items-center justify-between border-b border-border pb-3 relative z-10">
         <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">Global Payout Stack</span>
       </div>
 
       <div className="my-4 flex items-center justify-center gap-4 relative z-10">
-        <div className="px-3 py-2 border border-subtle bg-muted rounded text-[10px] font-mono font-bold text-foreground">
+        <div className="px-3 py-2 border border-border bg-muted rounded text-[10px] font-mono font-bold text-foreground">
           Paystack
         </div>
         <span className="text-muted-foreground text-xs">+</span>
-        <div className="px-3 py-2 border border-subtle bg-muted rounded text-[10px] font-mono font-bold text-foreground">
+        <div className="px-3 py-2 border border-border bg-muted rounded text-[10px] font-mono font-bold text-foreground">
           Flutterwave
         </div>
       </div>
 
-      <div className="flex justify-between items-center text-[9px] font-mono text-muted-foreground border-t border-subtle pt-3 relative z-10">
+      <div className="flex justify-between items-center text-[9px] font-mono text-muted-foreground border-t border-border pt-3 relative z-10">
         <span>Accra Edge Node</span>
         <span className="text-green-500 font-semibold">MoMo & Cards Active</span>
       </div>
@@ -125,9 +125,9 @@ function SoloFounderVisual() {
 
 function GrowthLoopsVisual() {
   return (
-    <div className="w-full h-full min-h-[200px] bg-slate-950 rounded-xl border border-subtle p-5 relative overflow-hidden flex flex-col justify-between shadow-lg">
+    <div className="w-full h-full min-h-[200px] bg-slate-950 rounded-xl border border-border p-5 relative overflow-hidden flex flex-col justify-between shadow-lg">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:20px_20px]" />
-      <div className="flex items-center justify-between border-b border-subtle pb-3 relative z-10">
+      <div className="flex items-center justify-between border-b border-border pb-3 relative z-10">
         <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">Programmatic SEO Growth</span>
       </div>
 
@@ -140,7 +140,7 @@ function GrowthLoopsVisual() {
         </div>
       </div>
 
-      <div className="text-[10px] font-mono text-center text-muted-foreground border-t border-subtle pt-3 relative z-10">
+      <div className="text-[10px] font-mono text-center text-muted-foreground border-t border-border pt-3 relative z-10">
         0% Paid Ads • 100% SEO Conversion Loops
       </div>
     </div>
@@ -183,7 +183,7 @@ export default function BlogPage() {
             
             {/* Left: Headline & Call To Action */}
             <div className="lg:col-span-7 flex flex-col justify-center text-left">
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-subtle bg-muted px-4 py-1.5 text-xs font-semibold tracking-wider uppercase">
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-muted px-4 py-1.5 text-xs font-semibold tracking-wider uppercase">
                 <Sparkles className="h-3.5 w-3.5 text-primary" />
                 Featured Editorial
               </div>
@@ -195,7 +195,7 @@ export default function BlogPage() {
               </p>
               
               <div className="flex flex-wrap items-center gap-6 mb-8 text-sm text-muted-foreground font-mono">
-                <Badge variant="outline" className="border-subtle bg-muted rounded py-1 px-3 uppercase text-[10px]">
+                <Badge variant="outline" className="border-border bg-muted rounded py-1 px-3 uppercase text-[10px]">
                   {featuredPost.category}
                 </Badge>
                 <div className="flex items-center gap-2">
@@ -212,7 +212,7 @@ export default function BlogPage() {
                   </Button>
                 </Link>
                 <Link href="/register">
-                  <Button variant="ghost" className="h-12 px-6 font-semibold border border-subtle hover:bg-muted rounded-lg">
+                  <Button variant="ghost" className="h-12 px-6 font-semibold border border-border hover:bg-muted rounded-lg">
                     Deploy Free Validation
                   </Button>
                 </Link>
@@ -222,7 +222,7 @@ export default function BlogPage() {
             {/* Right: Sleek custom SVG application mockup */}
             <div className="lg:col-span-5 relative">
               <div className="absolute inset-0 bg-primary/10 rounded-2xl blur-3xl -z-10" />
-              <div className="border border-subtle p-3 rounded-2xl bg-muted/30">
+              <div className="border border-border p-3 rounded-2xl bg-muted/30">
                 <AgentArchitectureVisual />
               </div>
             </div>
@@ -231,7 +231,7 @@ export default function BlogPage() {
         </section>
 
         {/* Sticky Category Sub-Navigation Bar */}
-        <section className="mb-12 border-b border-subtle sticky top-16 bg-background/80 backdrop-blur-md z-40 py-4 flex items-center justify-between">
+        <section className="mb-12 border-b border-border sticky top-16 bg-background/80 backdrop-blur-md z-40 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth">
             {categories.map((category) => (
               <button
@@ -240,7 +240,7 @@ export default function BlogPage() {
                 className={`px-4 py-2 text-xs font-semibold rounded-lg border transition-all shrink-0 ${
                   activeCategory === category
                     ? "border-foreground bg-foreground text-background"
-                    : "border-subtle hover:border-foreground/40 text-muted-foreground"
+                    : "border-border hover:border-foreground/40 text-muted-foreground"
                 }`}
               >
                 {category}
@@ -267,7 +267,7 @@ export default function BlogPage() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -15 }}
                   transition={{ duration: 0.3, delay: idx * 0.05 }}
-                  className="surface-card flex flex-col justify-between p-6 rounded-2xl border border-subtle hover:border-primary/50 transition-colors group relative shadow-sm"
+                  className="surface-card flex flex-col justify-between p-6 rounded-2xl border border-border hover:border-primary/50 transition-colors group relative shadow-sm"
                 >
                   <div className="flex flex-col gap-6">
                     {/* Category Header */}
@@ -280,7 +280,7 @@ export default function BlogPage() {
                     </div>
 
                     {/* Highly Clean Functional SVG Mockups in cards */}
-                    <div className="border border-subtle rounded-xl p-2 bg-muted/40 overflow-hidden">
+                    <div className="border border-border rounded-xl p-2 bg-muted/40 overflow-hidden">
                       {post.slug === "why-founders-stuck-idea-validation" && <ValidationTrapVisual />}
                       {post.slug === "bootstrap-saas-ghana-2026" && <SoloFounderVisual />}
                       {post.slug === "customer-acquisition-channels-b2b" && <GrowthLoopsVisual />}
@@ -297,7 +297,7 @@ export default function BlogPage() {
                     </div>
                   </div>
 
-                  <div className="mt-8 border-t border-subtle pt-4 flex items-center justify-between">
+                  <div className="mt-8 border-t border-border pt-4 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="h-6 w-6 rounded-full bg-muted flex items-center justify-center text-[9px] font-bold text-foreground">
                         {post.author.avatarText}
@@ -316,7 +316,7 @@ export default function BlogPage() {
         </section>
 
         {/* Mid-Page Lead Magnet CTA Break Banner */}
-        <section className="p-8 md:p-12 rounded-2xl border border-subtle bg-muted/20 relative overflow-hidden shadow-inner">
+        <section className="p-8 md:p-12 rounded-2xl border border-border bg-muted/20 relative overflow-hidden shadow-inner">
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-[80px] rounded-full pointer-events-none" />
           
           <div className="max-w-3xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
@@ -347,7 +347,7 @@ export default function BlogPage() {
                       placeholder="Enter your work email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="h-11 px-4 text-sm rounded-lg border border-subtle bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors min-w-[220px]"
+                      className="h-11 px-4 text-sm rounded-lg border border-border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors min-w-[220px]"
                     />
                     <Button type="submit" className="h-11 px-6 rounded-lg font-semibold flex items-center gap-2">
                       Get Free Access

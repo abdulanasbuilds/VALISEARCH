@@ -60,46 +60,150 @@ export const CREDIT_COSTS = {
 /** Default credits for new users */
 export const DEFAULT_CREDITS = 6
 
-/** Plan configuration */
 export const PLANS = {
-  free: {
-    name: "Free",
-    credits: 6,
+  starter: {
+    id: "starter",
+    name: "Starter",
     price: 0,
+    annualPrice: 0,
+    analyses: 3,
+    credits: 6,
+    teamMembers: 1,
+    historyDays: 7,
+    model: "google/gemini-2.5-flash-preview",
     features: [
-      "6 analysis credits",
-      "Full 12-agent analysis",
-      "Export as text",
+      "3 startup analyses",
+      "Core 6 intelligence sections",
+      "Basic market overview",
+      "7-day analysis history",
       "Community support",
+    ],
+    locked: [
+      "Real-time web research",
+      "Competitor website scraping",
+      "PDF and DOCX export",
+      "AI Co-founder Chat",
+      "Team workspace",
+      "API access",
     ],
   },
   pro: {
+    id: "pro",
     name: "Pro",
-    credits: 100,
     price: 29,
+    annualPrice: 23,
+    analyses: 50,
+    credits: 100,
+    teamMembers: 1,
+    historyDays: 90,
+    model: "anthropic/claude-sonnet-4-5",
+    lsMonthlyVariantId: process.env.NEXT_PUBLIC_LS_PRO_MONTHLY_ID ?? "",
+    lsAnnualVariantId: process.env.NEXT_PUBLIC_LS_PRO_ANNUAL_ID ?? "",
     features: [
-      "100 credits/month",
-      "Full 12-agent analysis",
-      "Deep analysis with web search",
-      "Priority support",
-      "Export all formats",
+      "50 intelligence reports per month",
+      "All 12 AI agents",
+      "Real-time web research (Serper + Firecrawl)",
+      "Competitor website deep scraping",
+      "PDF and DOCX export",
+      "AI Co-founder Chat",
+      "90-day history",
+      "Priority Claude Sonnet model",
+      "Email support (48hr)",
+    ],
+    locked: [
+      "Team workspace",
+      "API access",
+      "White-label reports",
     ],
   },
-  premium: {
-    name: "Premium",
-    credits: -1, // unlimited
+  business: {
+    id: "business",
+    name: "Business",
     price: 79,
+    annualPrice: 63,
+    analyses: 200,
+    credits: 400,
+    teamMembers: 5,
+    historyDays: 365,
+    model: "anthropic/claude-sonnet-4-5",
+    lsMonthlyVariantId: process.env.NEXT_PUBLIC_LS_BIZ_MONTHLY_ID ?? "",
+    lsAnnualVariantId: process.env.NEXT_PUBLIC_LS_BIZ_ANNUAL_ID ?? "",
     features: [
-      "Unlimited credits",
-      "Full 12-agent analysis",
-      "Deep analysis with web search",
-      "Priority support",
-      "Export all formats",
-      "API access (coming soon)",
-      "Custom agents (coming soon)",
+      "200 intelligence reports per month",
+      "Everything in Pro",
+      "Team workspace (5 members)",
+      "API access with key management",
+      "White-label PDF reports",
+      "1-year history",
+      "Financial signals (market data)",
+      "Priority support (24hr)",
     ],
+    locked: [
+      "Unlimited analyses",
+      "Custom agents",
+      "Dedicated support",
+    ],
+  },
+  enterprise: {
+    id: "enterprise",
+    name: "Enterprise",
+    price: 199,
+    annualPrice: 159,
+    analyses: -1,
+    credits: -1,
+    teamMembers: -1,
+    historyDays: -1,
+    model: "anthropic/claude-sonnet-4-5",
+    lsMonthlyVariantId: process.env.NEXT_PUBLIC_LS_ENT_MONTHLY_ID ?? "",
+    lsAnnualVariantId: process.env.NEXT_PUBLIC_LS_ENT_ANNUAL_ID ?? "",
+    features: [
+      "Unlimited intelligence reports",
+      "Everything in Business",
+      "Unlimited team members",
+      "Custom AI agents",
+      "Bulk analysis (CSV upload)",
+      "Side-by-side comparison mode",
+      "Dedicated account manager",
+      "Custom integrations",
+      "SLA guarantee",
+      "Unlimited history",
+    ],
+    locked: [],
   },
 } as const
+
+export type PlanId = keyof typeof PLANS
+
+// Trial system
+export const TRIAL = {
+  DURATION_DAYS: 7,
+  PLAN_DURING_TRIAL: "pro" as PlanId,
+  PLAN_AFTER_TRIAL: "starter" as PlanId,
+} as const
+
+// Billing period
+export type BillingPeriod = "monthly" | "annual"
+
+export function getAnnualSavings(planId: PlanId): number {
+  const plan = PLANS[planId]
+  if (plan.price === 0) return 0
+  return Math.round(
+    ((plan.price - plan.annualPrice) / plan.price) * 100
+  )
+}
+
+export function getLSVariantId(
+  planId: PlanId,
+  period: BillingPeriod
+): string {
+  const plan = PLANS[planId]
+  if ("lsMonthlyVariantId" in plan && "lsAnnualVariantId" in plan) {
+    return period === "annual"
+      ? (plan.lsAnnualVariantId as string)
+      : (plan.lsMonthlyVariantId as string)
+  }
+  return ""
+}
 
 /** Agent display names for UI */
 export const AGENT_DISPLAY_NAMES = {

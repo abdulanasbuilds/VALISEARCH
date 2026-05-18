@@ -55,7 +55,7 @@ export default function BlogPostPage({ params }: Props) {
       for (let i = headingElements.length - 1; i >= 0; i--) {
         const el = headingElements[i]
         if (el && scrollPosition >= el.offsetTop) {
-          setActiveHeading(headings[i])
+          setActiveHeading(headings[i] || "")
           break
         }
       }

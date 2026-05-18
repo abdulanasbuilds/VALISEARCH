@@ -115,12 +115,12 @@
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-2 focus-visible:ring-offset-background;
   }
   
-  .border-subtle {
+  .border-border {
     @apply border border-border/60;
   }
   
   .surface-card {
-    @apply bg-card border-subtle shadow-sm rounded-xl;
+    @apply bg-card border-border shadow-sm rounded-xl;
   }
 }
 
